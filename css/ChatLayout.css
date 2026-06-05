@@ -103,3 +103,22 @@ body {
   margin-bottom: 15px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
+.nav-links {
+  margin: 15px 0;
+}
+
+.nav-btn {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #e8724a;
+  color: #e8724a;
+  background: white;
+  transition: 0.2s;
+}
+
+.nav-btn:hover {
+  background: #fff3ef;
+}

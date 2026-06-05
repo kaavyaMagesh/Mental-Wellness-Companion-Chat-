@@ -12,7 +12,11 @@ export function renderChatLayout() {
           <h2>🌿 Wellness AI</h2>
           <p>Mind. Body. Balance.</p>
         </div>
-
+<div class="nav-links">
+  <a href="admin.html" class="nav-btn">
+    Admin Panel →
+  </a>
+</div>
         <button class="new-chat-btn">
           ✨ New Chat
         </button>
