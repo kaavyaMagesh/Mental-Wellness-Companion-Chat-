@@ -1,41 +1,40 @@
-export const sessions = [
+// data/mockChatData.js
+
+export const mockSessions = [
   {
     id: 1,
-    title: "Exam Stress",
-    preview: "Feeling overwhelmed...",
+    title: "Managing Stress",
+    preview: "I have been feeling stressed lately...",
     time: "2h ago",
   },
   {
     id: 2,
     title: "Daily Check-In",
-    preview: "Today was productive...",
+    preview: "Today was productive and calm.",
     time: "Yesterday",
   },
   {
     id: 3,
-    title: "Sleep Routine",
-    preview: "Need help sleeping...",
+    title: "Sleep Improvement",
+    preview: "How can I sleep better?",
     time: "2 days ago",
   },
 ];
 
 export const messages = [
   {
-    id: 1,
-    sender: "assistant",
-    text: "Hello Alex, how are you feeling today?",
-    timestamp: "10:00 AM",
+    text: "Hello! How are you feeling today?",
+    sender: "ai",
+    timestamp: "9:00 AM",
   },
   {
-    id: 2,
+    text: "I've been a little stressed recently.",
     sender: "user",
-    text: "I've been feeling stressed about exams.",
-    timestamp: "10:01 AM",
+    timestamp: "9:01 AM",
   },
   {
-    id: 3,
-    sender: "assistant",
-    text: "Would you like to talk about what's causing the most stress?",
-    timestamp: "10:02 AM",
+    text: "I'm here to help. Would you like to talk about what's causing the stress?",
+    sender: "ai",
+    timestamp: "9:02 AM",
   },
 ];
