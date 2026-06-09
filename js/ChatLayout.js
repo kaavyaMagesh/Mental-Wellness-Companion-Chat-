@@ -87,7 +87,6 @@ export function renderChatLayout() {
 
   renderSessionList();
   renderMessages();
-
   setupEventListeners();
 }
 
@@ -136,6 +135,22 @@ function renderMessages() {
   });
 }
 
+function createTypingIndicator() {
+  const indicator =
+    document.createElement("div");
+
+  indicator.className =
+    "typing-indicator";
+
+  indicator.innerHTML = `
+    <span></span>
+    <span></span>
+    <span></span>
+  `;
+
+  return indicator;
+}
+
 function setupEventListeners() {
   const sendBtn =
     document.getElementById("sendBtn");
@@ -146,27 +161,19 @@ function setupEventListeners() {
   const newChatBtn =
     document.getElementById("newChatBtn");
 
-  sendBtn.addEventListener("click", () => {
-    const value = input.value.trim();
+  sendBtn.addEventListener(
+    "click",
+    sendMessage
+  );
 
-    if (!value) return;
-
-    const chatContainer =
-      document.getElementById("chatContainer");
-
-    chatContainer.appendChild(
-      createMessageBubble(
-        value,
-        "user",
-        "Now"
-      )
-    );
-
-    input.value = "";
-
-    chatContainer.scrollTop =
-      chatContainer.scrollHeight;
-  });
+  input.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    }
+  );
 
   newChatBtn.addEventListener(
     "click",
@@ -174,8 +181,99 @@ function setupEventListeners() {
   );
 }
 
+async function sendMessage() {
+  const input =
+    document.getElementById("messageInput");
+
+  const chatContainer =
+    document.getElementById("chatContainer");
+
+  const content =
+    input.value.trim();
+
+  if (!content) return;
+
+  chatContainer.appendChild(
+    createMessageBubble(
+      content,
+      "user",
+      "Now"
+    )
+  );
+
+  input.value = "";
+
+  chatContainer.scrollTop =
+    chatContainer.scrollHeight;
+
+  const typingIndicator =
+    createTypingIndicator();
+
+  chatContainer.appendChild(
+    typingIndicator
+  );
+
+  chatContainer.scrollTop =
+    chatContainer.scrollHeight;
+
+  try {
+    /*
+      TODO: Replace with
+
+      POST
+      /api/chat/sessions/:id/messages
+
+      Example:
+
+      const response = await fetch(
+        \`/api/chat/sessions/\${currentSessionId}/messages\`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            message: content
+          })
+        }
+      );
+
+      const aiResponse =
+        await response.json();
+    */
+
+    await new Promise(
+      (resolve) =>
+        setTimeout(resolve, 1500)
+    );
+
+    typingIndicator.remove();
+
+    chatContainer.appendChild(
+      createMessageBubble(
+        "I'm here to help. Tell me more about how you're feeling.",
+        "ai",
+        "Now"
+      )
+    );
+  } catch (error) {
+    console.error(error);
+
+    typingIndicator.remove();
+  }
+
+  chatContainer.scrollTop =
+    chatContainer.scrollHeight;
+}
+
 function createNewSession() {
-  // TODO: Replace with POST /api/chat/sessions
+  /*
+    TODO:
+    Replace with
+
+    POST /api/chat/sessions
+  */
 
   const newSession = {
     id: Date.now(),
@@ -192,7 +290,12 @@ function createNewSession() {
 }
 
 function selectSession(sessionId) {
-  // TODO: Replace with GET /api/chat/sessions/:id
+  /*
+    TODO:
+    Replace with
+
+    GET /api/chat/sessions/:id
+  */
 
   currentSessionId = sessionId;
 

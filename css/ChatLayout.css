@@ -160,3 +160,93 @@ body {
   width: 100%;
   margin-bottom: 16px;
 }
+/* ==========================
+   Typing Indicator
+========================== */
+
+.typing-indicator {
+  display: flex;
+  gap: 6px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  align-items: center;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: #9a9080;
+  border-radius: 50%;
+  animation: pulse 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================
+   Message Container
+========================== */
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================
+   Input Area
+========================== */
+
+.chat-input-container {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid #e5ded6;
+  background: white;
+}
+
+.chat-input-container input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #d8d1ca;
+  border-radius: 24px;
+  outline: none;
+}
+
+.chat-input-container input:focus {
+  border-color: #e8724a;
+}
+
+#sendBtn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #e8724a;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+#sendBtn:hover {
+  opacity: 0.9;
+}
