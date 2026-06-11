@@ -1,13 +1,28 @@
-import { supportTickets } from "../data/mockSupportData.js";
+import { supportTickets }
+from "../data/mockSupportData.js";
 
 export function createSupportTable() {
-  const container = document.createElement("div");
+  const container =
+    document.createElement("div");
 
-  container.className = "support-table-container";
+  container.className =
+    "support-table-container";
+
+  const storedTickets =
+    JSON.parse(
+      localStorage.getItem(
+        "supportTickets"
+      )
+    ) || [];
+
+  const allTickets = [
+    ...storedTickets,
+    ...supportTickets,
+  ];
 
   let tableRows = "";
 
-  supportTickets.forEach((ticket) => {
+  allTickets.forEach((ticket) => {
     tableRows += `
       <tr>
         <td>${ticket.id}</td>
@@ -16,14 +31,20 @@ export function createSupportTable() {
         <td>${ticket.category}</td>
         <td>${ticket.priority}</td>
         <td>
-          <span class="status-badge ${ticket.status
-            .toLowerCase()
-            .replace(" ", "-")}">
+          <span
+            class="status-badge ${ticket.status
+              .toLowerCase()
+              .replace(" ", "-")}"
+          >
             ${ticket.status}
           </span>
         </td>
         <td>
-          <button class="action-btn">View</button>
+          <button
+            class="action-btn"
+          >
+            View
+          </button>
         </td>
       </tr>
     `;
@@ -31,6 +52,7 @@ export function createSupportTable() {
 
   container.innerHTML = `
     <table class="support-table">
+
       <thead>
         <tr>
           <th>ID</th>
@@ -46,6 +68,7 @@ export function createSupportTable() {
       <tbody>
         ${tableRows}
       </tbody>
+
     </table>
   `;
 

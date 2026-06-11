@@ -1,11 +1,22 @@
-import { mockSessions, messages } from "../data/mockChatData.js";
-import { createMessageBubble } from "./MessageBubble.js";
+import {
+  mockSessions,
+  sessionMessages,
+  olderMessages,
+} from "../data/mockChatData.js";
+
+import { createMessageBubble }
+from "./MessageBubble.js";
 
 let sessions = [...mockSessions];
-let currentSessionId = sessions[0]?.id || null;
+
+let currentSessionId =
+  sessions[0]?.id || null;
+
+let isLoadingOlderMessages = false;
 
 export function renderChatLayout() {
-  const app = document.getElementById("app");
+  const app =
+    document.getElementById("app");
 
   app.innerHTML = `
     <div class="chat-layout">
@@ -18,12 +29,15 @@ export function renderChatLayout() {
         </div>
 
         <div class="nav-links">
-          <a href="admin.html" class="nav-btn">
-            Admin Panel →
-          </a>
+         <a href="support.html" class="nav-btn">
+  Support Center
+</a>
         </div>
 
-        <button class="new-chat-btn" id="newChatBtn">
+        <button
+          class="new-chat-btn"
+          id="newChatBtn"
+        >
           ✨ New Chat
         </button>
 
@@ -92,12 +106,15 @@ export function renderChatLayout() {
 
 function renderSessionList() {
   const sessionList =
-    document.getElementById("sessionList");
+    document.getElementById(
+      "sessionList"
+    );
 
   sessionList.innerHTML = "";
 
   sessions.forEach((session) => {
-    const item = document.createElement("div");
+    const item =
+      document.createElement("div");
 
     item.className =
       currentSessionId === session.id
@@ -110,9 +127,10 @@ function renderSessionList() {
       <span>${session.time}</span>
     `;
 
-    item.addEventListener("click", () => {
-      selectSession(session.id);
-    });
+    item.addEventListener(
+      "click",
+      () => selectSession(session.id)
+    );
 
     sessionList.appendChild(item);
   });
@@ -120,9 +138,16 @@ function renderSessionList() {
 
 function renderMessages() {
   const chatContainer =
-    document.getElementById("chatContainer");
+    document.getElementById(
+      "chatContainer"
+    );
 
   chatContainer.innerHTML = "";
+
+  const messages =
+    sessionMessages[
+      currentSessionId
+    ] || [];
 
   messages.forEach((message) => {
     chatContainer.appendChild(
@@ -133,33 +158,31 @@ function renderMessages() {
       )
     );
   });
-}
 
-function createTypingIndicator() {
-  const indicator =
-    document.createElement("div");
-
-  indicator.className =
-    "typing-indicator";
-
-  indicator.innerHTML = `
-    <span></span>
-    <span></span>
-    <span></span>
-  `;
-
-  return indicator;
+  chatContainer.scrollTop =
+    chatContainer.scrollHeight;
 }
 
 function setupEventListeners() {
   const sendBtn =
-    document.getElementById("sendBtn");
+    document.getElementById(
+      "sendBtn"
+    );
 
   const input =
-    document.getElementById("messageInput");
+    document.getElementById(
+      "messageInput"
+    );
 
   const newChatBtn =
-    document.getElementById("newChatBtn");
+    document.getElementById(
+      "newChatBtn"
+    );
+
+  const chatContainer =
+    document.getElementById(
+      "chatContainer"
+    );
 
   sendBtn.addEventListener(
     "click",
@@ -179,25 +202,60 @@ function setupEventListeners() {
     "click",
     createNewSession
   );
+
+  chatContainer.addEventListener(
+    "scroll",
+    handleInfiniteScroll
+  );
+}
+
+function createTypingIndicator() {
+  const indicator =
+    document.createElement("div");
+
+  indicator.className =
+    "typing-indicator";
+
+  indicator.innerHTML = `
+    <span></span>
+    <span></span>
+    <span></span>
+  `;
+
+  return indicator;
 }
 
 async function sendMessage() {
   const input =
-    document.getElementById("messageInput");
+    document.getElementById(
+      "messageInput"
+    );
 
   const chatContainer =
-    document.getElementById("chatContainer");
+    document.getElementById(
+      "chatContainer"
+    );
 
   const content =
     input.value.trim();
 
   if (!content) return;
 
+  const userMessage = {
+    text: content,
+    sender: "user",
+    timestamp: "Now",
+  };
+
+  sessionMessages[
+    currentSessionId
+  ].push(userMessage);
+
   chatContainer.appendChild(
     createMessageBubble(
-      content,
-      "user",
-      "Now"
+      userMessage.text,
+      userMessage.sender,
+      userMessage.timestamp
     )
   );
 
@@ -218,29 +276,24 @@ async function sendMessage() {
 
   try {
     /*
-      TODO: Replace with
+    TODO:
 
-      POST
-      /api/chat/sessions/:id/messages
+    POST
+    /api/chat/sessions/:id/messages
 
-      Example:
-
-      const response = await fetch(
-        \`/api/chat/sessions/\${currentSessionId}/messages\`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-          body: JSON.stringify({
-            message: content
-          })
-        }
-      );
-
-      const aiResponse =
-        await response.json();
+    const response = await fetch(
+      `/api/chat/sessions/${currentSessionId}/messages`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+        body: JSON.stringify({
+          message: content
+        })
+      }
+    );
     */
 
     await new Promise(
@@ -250,11 +303,22 @@ async function sendMessage() {
 
     typingIndicator.remove();
 
+    const aiMessage = {
+      text:
+        "I'm here to help. Tell me more about how you're feeling.",
+      sender: "ai",
+      timestamp: "Now",
+    };
+
+    sessionMessages[
+      currentSessionId
+    ].push(aiMessage);
+
     chatContainer.appendChild(
       createMessageBubble(
-        "I'm here to help. Tell me more about how you're feeling.",
-        "ai",
-        "Now"
+        aiMessage.text,
+        aiMessage.sender,
+        aiMessage.timestamp
       )
     );
   } catch (error) {
@@ -269,10 +333,8 @@ async function sendMessage() {
 
 function createNewSession() {
   /*
-    TODO:
-    Replace with
-
-    POST /api/chat/sessions
+  TODO:
+  POST /api/chat/sessions
   */
 
   const newSession = {
@@ -284,25 +346,82 @@ function createNewSession() {
 
   sessions.unshift(newSession);
 
-  currentSessionId = newSession.id;
+  sessionMessages[
+    newSession.id
+  ] = [];
+
+  currentSessionId =
+    newSession.id;
 
   renderSessionList();
+  renderMessages();
 }
 
 function selectSession(sessionId) {
   /*
-    TODO:
-    Replace with
-
-    GET /api/chat/sessions/:id
+  TODO:
+  GET /api/chat/sessions/:id
   */
 
-  currentSessionId = sessionId;
+  currentSessionId =
+    sessionId;
 
   renderSessionList();
+  renderMessages();
 
   console.log(
-    "Selected Session:",
+    "Loaded Session:",
     sessionId
   );
+}
+
+function handleInfiniteScroll() {
+  const chatContainer =
+    document.getElementById(
+      "chatContainer"
+    );
+
+  if (
+    chatContainer.scrollTop === 0 &&
+    !isLoadingOlderMessages
+  ) {
+    loadOlderMessages();
+  }
+}
+
+function loadOlderMessages() {
+  isLoadingOlderMessages = true;
+
+  const chatContainer =
+    document.getElementById(
+      "chatContainer"
+    );
+
+  const previousHeight =
+    chatContainer.scrollHeight;
+
+  olderMessages
+    .slice()
+    .reverse()
+    .forEach((message) => {
+      chatContainer.prepend(
+        createMessageBubble(
+          message.text,
+          message.sender,
+          message.timestamp
+        )
+      );
+    });
+
+  const newHeight =
+    chatContainer.scrollHeight;
+
+  chatContainer.scrollTop =
+    newHeight - previousHeight;
+
+  console.log(
+    "Loaded older messages"
+  );
+
+  isLoadingOlderMessages = false;
 }

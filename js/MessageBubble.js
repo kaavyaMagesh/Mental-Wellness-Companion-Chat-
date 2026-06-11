@@ -6,34 +6,55 @@ export function createMessageBubble(
   const wrapper =
     document.createElement("div");
 
-  wrapper.className =
+  wrapper.classList.add(
+    "message-row"
+  );
+
+  wrapper.classList.add(
     sender === "user"
-      ? "message-row user-row"
-      : "message-row assistant-row";
+      ? "user-row"
+      : "assistant-row"
+  );
 
   const bubble =
     document.createElement("div");
 
-  bubble.className =
+  bubble.classList.add(
+    "message-bubble"
+  );
+
+  bubble.classList.add(
     sender === "user"
-      ? "message-bubble user-bubble"
-      : "message-bubble assistant-bubble";
+      ? "user-bubble"
+      : "assistant-bubble"
+  );
 
   const messageText =
     document.createElement("p");
 
-  messageText.textContent = text;
+  messageText.textContent =
+    text;
 
-  const time =
+  const timestampElement =
     document.createElement("span");
 
-  time.className = "timestamp";
-  time.textContent = timestamp;
+  timestampElement.className =
+    "timestamp";
 
-  bubble.appendChild(messageText);
-  bubble.appendChild(time);
+  timestampElement.textContent =
+    timestamp;
 
-  wrapper.appendChild(bubble);
+  bubble.appendChild(
+    messageText
+  );
+
+  bubble.appendChild(
+    timestampElement
+  );
+
+  wrapper.appendChild(
+    bubble
+  );
 
   return wrapper;
 }

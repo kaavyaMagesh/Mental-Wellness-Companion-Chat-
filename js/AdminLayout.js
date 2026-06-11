@@ -10,9 +10,7 @@ export function renderAdminLayout() {
       <aside class="admin-sidebar">
         <h2>🌿 Wellness Admin</h2>
 <div class="nav-links">
-  <a href="chat.html" class="nav-btn">
-    ← Chat Interface
-  </a>
+
 </div>
         <nav>
           <div class="nav-item active">

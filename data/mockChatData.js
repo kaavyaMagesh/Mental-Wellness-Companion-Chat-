@@ -21,20 +21,61 @@ export const mockSessions = [
   },
 ];
 
-export const messages = [
+export const sessionMessages = {
+  1: [
+    {
+      text: "Hello! How are you feeling today?",
+      sender: "ai",
+      timestamp: "9:00 AM",
+    },
+    {
+      text: "I've been a little stressed recently.",
+      sender: "user",
+      timestamp: "9:01 AM",
+    },
+    {
+      text: "Would you like to tell me more?",
+      sender: "ai",
+      timestamp: "9:02 AM",
+    },
+  ],
+
+  2: [
+    {
+      text: "How was your day today?",
+      sender: "ai",
+      timestamp: "8:00 PM",
+    },
+    {
+      text: "Pretty productive actually.",
+      sender: "user",
+      timestamp: "8:01 PM",
+    },
+  ],
+
+  3: [
+    {
+      text: "Tell me about your sleep habits.",
+      sender: "ai",
+      timestamp: "10:00 PM",
+    },
+    {
+      text: "I've been sleeping very late.",
+      sender: "user",
+      timestamp: "10:01 PM",
+    },
+  ],
+};
+
+export const olderMessages = [
   {
-    text: "Hello! How are you feeling today?",
+    text: "Earlier conversation message...",
     sender: "ai",
-    timestamp: "9:00 AM",
+    timestamp: "Yesterday",
   },
   {
-    text: "I've been a little stressed recently.",
+    text: "Another older message...",
     sender: "user",
-    timestamp: "9:01 AM",
-  },
-  {
-    text: "I'm here to help. Would you like to talk about what's causing the stress?",
-    sender: "ai",
-    timestamp: "9:02 AM",
+    timestamp: "Yesterday",
   },
 ];
