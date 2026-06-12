@@ -16,8 +16,7 @@ body {
 ========================== */
 
 .chat-layout {
-  display: grid;
-  grid-template-columns: 22% 55% 23%;
+  display: flex;
   height: 100vh;
   overflow: hidden;
 }
@@ -27,10 +26,13 @@ body {
 ========================== */
 
 .sidebar {
+  width: 25%;
+  flex-shrink: 0;
   background: white;
   padding: 20px;
   border-right: 1px solid #ddd;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .logo-section p {
@@ -107,12 +109,14 @@ body {
 ========================== */
 
 .chat-window {
+  flex: 1;
   display: flex;
   flex-direction: column;
   height: 100vh;
   min-height: 0;
   overflow: hidden;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .chat-header {
@@ -228,23 +232,72 @@ body {
   }
 }
 
-/* ==========================
-   INFO PANEL
-========================== */
-
-.info-panel {
-  background: white;
-  border-left: 1px solid #ddd;
-  padding: 20px;
-  overflow-y: auto;
+.bookmark-btn {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
 }
 
-.info-card {
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bookmark-panel {
+  width: 0;
+  height: 100vh;
   background: white;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-left-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border-left: 0px solid #ddd;
+}
+
+.bookmark-panel.open {
+  width: 320px;
+  border-left: 1px solid #ddd;
+}
+
+.bookmark-panel-inner {
+  width: 320px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.bookmark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.bookmark-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.close-bookmark-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #9a9080;
+  transition: color 0.2s ease, transform 0.2s ease;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.close-bookmark-btn:hover {
+  color: #e8724a;
+  transform: scale(1.1);
 }
 
 /* ==========================
@@ -256,4 +309,16 @@ body {
   padding: 12px;
   font-size: 12px;
   color: #9a9080;
+}
+.empty-state {
+  text-align: center;
+  color: #9a9080;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+.message-bubble {
+  max-width: 75%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }

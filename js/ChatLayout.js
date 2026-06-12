@@ -47,55 +47,63 @@ export function renderChatLayout() {
 
       <main class="chat-window">
 
-        <div class="chat-header">
-          <div>
-            <h2>AI Companion</h2>
-            <span class="online-status">
-              ● Online
-            </span>
-          </div>
-        </div>
+  <div class="chat-header">
 
-        <div
-          id="chatContainer"
-          class="messages-container"
-        ></div>
+    <div>
+      <h2>AI Companion</h2>
 
-        <div class="chat-input-container">
+      <span class="online-status">
+        ● Online • Created Jun 8, 2026
+      </span>
+    </div>
 
-          <input
-            id="messageInput"
-            placeholder="Type your message here..."
-          />
+    <button
+      id="bookmarkBtn"
+      class="bookmark-btn"
+      title="Bookmarks"
+    >
+      🔖
+    </button>
 
-          <button id="sendBtn">
-            ➤
-          </button>
+  </div>
 
-        </div>
+  <div
+    id="chatContainer"
+    class="messages-container"
+  ></div>
 
-      </main>
+  <div class="chat-input-container">
 
-      <aside class="info-panel">
+    <input
+      id="messageInput"
+      placeholder="Type your message here..."
+    />
 
-        <div class="info-card">
-          <h3>Session Details</h3>
-          <p>Created: Jun 8, 2026</p>
-          <p>Messages: 24</p>
-        </div>
+    <button id="sendBtn">
+      ➤
+    </button>
 
-        <div class="info-card">
-          <h3>Wellness Tip</h3>
-          <p>Take a short walk today.</p>
-        </div>
+  </div>
 
-        <div class="info-card">
-          <h3>Resource</h3>
-          <p>5-Minute Breathing Exercise</p>
-        </div>
+</main>
 
-      </aside>
+<aside
+  id="bookmarkPanel"
+  class="bookmark-panel"
+>
+  <div class="bookmark-panel-inner">
+    <div class="bookmark-header">
+      <h3>🔖 Bookmarked Messages</h3>
+      <button id="closeBookmarkBtn" class="close-bookmark-btn" title="Close Bookmarks">✕</button>
+    </div>
 
+    <div id="bookmarkList">
+      <div class="bookmark-item">
+        No bookmarks yet
+      </div>
+    </div>
+  </div>
+</aside>
     </div>
   `;
 
@@ -111,6 +119,17 @@ function renderSessionList() {
     );
 
   sessionList.innerHTML = "";
+
+  if (sessions.length === 0) {
+    sessionList.innerHTML = `
+      <div class="empty-state">
+        No conversations yet.
+        <br>
+        Start a new chat.
+      </div>
+    `;
+    return;
+  }
 
   sessions.forEach((session) => {
     const item =
@@ -149,6 +168,17 @@ function renderMessages() {
       currentSessionId
     ] || [];
 
+  if (messages.length === 0) {
+    chatContainer.innerHTML = `
+      <div class="empty-state">
+        No messages yet.
+        <br>
+        Start the conversation.
+      </div>
+    `;
+    return;
+  }
+
   messages.forEach((message) => {
     chatContainer.appendChild(
       createMessageBubble(
@@ -168,7 +198,31 @@ function setupEventListeners() {
     document.getElementById(
       "sendBtn"
     );
+const bookmarkBtn =
+  document.getElementById(
+    "bookmarkBtn"
+  );
 
+const bookmarkPanel =
+  document.getElementById(
+    "bookmarkPanel"
+  );
+
+bookmarkBtn.addEventListener(
+  "click",
+  () => {
+    bookmarkPanel.classList.toggle(
+      "open"
+    );
+  }
+);
+
+const closeBookmarkBtn = document.getElementById("closeBookmarkBtn");
+if (closeBookmarkBtn) {
+  closeBookmarkBtn.addEventListener("click", () => {
+    bookmarkPanel.classList.remove("open");
+  });
+}
   const input =
     document.getElementById(
       "messageInput"
@@ -239,7 +293,17 @@ async function sendMessage() {
   const content =
     input.value.trim();
 
-  if (!content) return;
+  if (!content) {
+  input.focus();
+  return;
+}
+
+if (content.length > 1000) {
+  alert(
+    "Message is too long. Please keep it under 1000 characters."
+  );
+  return;
+}
 
   const userMessage = {
     text: content,
@@ -247,9 +311,19 @@ async function sendMessage() {
     timestamp: "Now",
   };
 
+  if (
+  !sessionMessages[
+    currentSessionId
+  ]
+) {
   sessionMessages[
     currentSessionId
-  ].push(userMessage);
+  ] = [];
+}
+
+sessionMessages[
+  currentSessionId
+].push(userMessage);
 
   chatContainer.appendChild(
     createMessageBubble(
@@ -295,12 +369,28 @@ async function sendMessage() {
       }
     );
     */
+    const timeoutId =
+  setTimeout(() => {
 
+    typingIndicator.remove();
+
+    chatContainer.appendChild(
+      createMessageBubble(
+        "The AI is taking longer than expected. Please try again shortly.",
+        "ai",
+        "Now"
+      )
+    );
+
+    chatContainer.scrollTop =
+      chatContainer.scrollHeight;
+
+  }, 5000);
     await new Promise(
       (resolve) =>
         setTimeout(resolve, 1500)
     );
-
+    clearTimeout(timeoutId);
     typingIndicator.remove();
 
     const aiMessage = {
@@ -322,9 +412,17 @@ async function sendMessage() {
       )
     );
   } catch (error) {
-    console.error(error);
+  console.error(error);
 
-    typingIndicator.remove();
+  typingIndicator.remove();
+
+  chatContainer.appendChild(
+    createMessageBubble(
+      "Unable to send message. Please check your connection and try again.",
+      "ai",
+      "Now"
+    )
+  );
   }
 
   chatContainer.scrollTop =
