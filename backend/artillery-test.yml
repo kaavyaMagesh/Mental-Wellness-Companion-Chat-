@@ -1,0 +1,56 @@
+config:
+  target: "http://localhost:5000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Phase 1: Warm up"
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 15
+      name: "Phase 2: Ramp up load"
+    - duration: 120
+      arrivalRate: 15
+      name: "Phase 3: High load verification"
+  defaults:
+    headers:
+      # Use a pre-signed mock JWT token generated for performance load testing
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEiLCJyb2xlIjoidXNlciJ9.signature"
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Student Daily Dashboard Flow"
+    flow:
+      # Step 1: Health check
+      - get:
+          url: "/health"
+      # Step 2: Log mood entry
+      - post:
+          url: "/api/moods"
+          json:
+            mood: "Calm"
+            mood_score: 8
+            stress_level: 3
+            sleep_quality: 8
+            energy_level: 7
+            note: "Logged during Artillery load simulation."
+            tags: ["artillery", "loadtest"]
+      # Step 3: Check analytics
+      - get:
+          url: "/api/moods/analytics"
+      # Step 4: Check trend (Cached window aggregate)
+      - get:
+          url: "/api/moods/trend"
+      # Step 5: Log journal reflection
+      - post:
+          url: "/api/journals"
+          json:
+            title: "Load Test Reflections"
+            content: "Writing some journal reflections to stress test the database GIN indexes and auto-updated triggers."
+            tags: ["artillery", "stress-test"]
+            is_private: true
+      # Step 6: Perform search query (Tuned FTS indexed column)
+      - get:
+          url: "/api/journals/search?q=indexes"
+      # Step 7: Export history data
+      - get:
+          url: "/api/journals/export?format=json"
