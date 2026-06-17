@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Wellness AI Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/ChatLayout.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            sans: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cream: '#f5f2eb',
+            'cream-dark': '#ede9df',
+            'cream-border': '#d8d3c8',
+            'warm-gray': '#8c8680',
+            'warm-dark': '#2a2520',
+            orange: '#e8651a',
+            'orange-light': '#f0894d',
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background: #f5f2eb;
+      color: #2a2520;
+      font-family: 'DM Sans', sans-serif;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script type="module">
+  import { renderAdminLayout }
+  from "./js/AdminLayout.js";
+
+  renderAdminLayout();
+</script>
+
+</body>
+</html>

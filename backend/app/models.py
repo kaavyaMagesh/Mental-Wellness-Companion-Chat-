@@ -7,6 +7,10 @@ class ChatSessionCreate(BaseModel):
     title: Optional[str] = Field(None, description="Optional title for the chat session")
     system_context: Optional[str] = Field(None, description="System context or persona instructions")
 
+class ChatSessionUpdate(BaseModel):
+    title: str = Field(..., description="The new title for the chat session")
+
+
 class ChatSessionResponse(BaseModel):
     id: UUID
     user_id: UUID

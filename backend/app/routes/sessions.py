@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from uuid import UUID
-from app.models import ChatSessionCreate, ChatSessionResponse
+from app.models import ChatSessionCreate, ChatSessionResponse, ChatSessionUpdate
 from app.database import get_supabase_client
 from supabase import Client
 
@@ -67,3 +67,16 @@ async def delete_session(session_id: UUID, db: Client = Depends(get_supabase_cli
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.patch("/sessions/{session_id}", response_model=ChatSessionResponse)
+async def update_session_title(session_id: UUID, session_update: ChatSessionUpdate, db: Client = Depends(get_supabase_client)):
+    try:
+        response = db.table("chat_sessions").update({"title": session_update.title}).eq("id", str(session_id)).eq("user_id", MOCK_USER_ID).execute()
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return response.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
