@@ -3,7 +3,10 @@ import { createMessageBubble } from "./MessageBubble.js";
 let sessions = [];
 let currentSessionId = null;
 let isLoadingOlderMessages = false;
+let isInitialLoading = false;
+let hasMoreMessages = true;
 let currentMessageOffset = 0;
+let currentAbortController = null;
 const MESSAGE_LIMIT = 50;
 
 const API_BASE_URL = "http://localhost:8000/api/chat";
@@ -212,6 +215,9 @@ async function initializeChat() {
       renderSessionList();
       renderMessages([]);
     }
+    
+    // Trigger onboarding tour for new users
+    setTimeout(startOnboardingTour, 800);
   } catch (error) {
     console.error("Error initializing chat:", error);
     renderSessionList();
@@ -253,8 +259,9 @@ function renderSessionList() {
       <!-- 3 dots action menu -->
       <div class="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
         <button class="menu-dots-btn text-warm-gray hover:text-warm-dark p-1 rounded hover:bg-cream-dark" style="font-size: 14px; line-height: 1;">⋮</button>
-        <div class="delete-dropdown hidden absolute right-0 mt-1 bg-white border border-cream-border rounded shadow-lg py-1 z-20 min-w-[80px]">
-          <button class="delete-session-btn text-xs text-red-600 hover:bg-red-50 w-full text-left px-3 py-1.5 font-medium">Delete</button>
+        <div class="delete-dropdown hidden absolute right-0 mt-1 bg-white border border-cream-border rounded shadow-lg py-1 z-20 min-w-[90px]">
+          <button class="rename-session-btn text-xs text-warm-dark hover:bg-cream-dark w-full text-left px-3 py-1.5 font-medium">Rename</button>
+          <button class="delete-session-btn text-xs text-red-600 hover:bg-red-50 w-full text-left px-3 py-1.5 font-medium border-t border-cream-border">Delete</button>
         </div>
       </div>
     `;
@@ -274,38 +281,96 @@ function renderSessionList() {
       dropdown.classList.toggle('hidden');
     });
 
+    // Rename session button logic
+    const renameBtn = item.querySelector('.rename-session-btn');
+    renameBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      dropdown.classList.add('hidden');
+      const newTitle = prompt("Rename Conversation:", title);
+      if (newTitle !== null) {
+        const trimmedTitle = newTitle.trim();
+        if (!trimmedTitle) {
+          alert("Title cannot be empty.");
+          return;
+        }
+        try {
+          const res = await fetch(`${API_BASE_URL}/sessions/${session.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ title: trimmedTitle })
+          });
+          if (!res.ok) throw new Error("Failed to rename session on server");
+          
+          const updatedSession = await res.json();
+          // Update in local memory state
+          const index = sessions.findIndex(s => s.id === session.id);
+          if (index !== -1) {
+            sessions[index].title = updatedSession.title;
+          }
+          renderSessionList();
+        } catch (err) {
+          console.error(err);
+          alert("Could not rename conversation. Please try again.");
+        }
+      }
+    });
 
     // Delete session button logic
     const deleteBtn = item.querySelector('.delete-session-btn');
     deleteBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
       dropdown.classList.add('hidden');
-      if (confirm(`Delete "${title}"?`)) {
-        try {
-          const res = await fetch(`${API_BASE_URL}/sessions/${session.id}`, { method: "DELETE" });
-          if (!res.ok) throw new Error("Failed to delete session from server");
-          
-          // Remove from local memory state
-          sessions = sessions.filter(s => s.id !== session.id);
-          renderSessionList();
-          
-          if (currentSessionId === session.id) {
-            if (sessions.length > 0) {
-              selectSession(sessions[0].id);
-            } else {
-              currentSessionId = null;
-              renderMessages([]);
-            }
+      try {
+        const res = await fetch(`${API_BASE_URL}/sessions/${session.id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete session from server");
+        
+        // Remove from local memory state
+        sessions = sessions.filter(s => s.id !== session.id);
+        renderSessionList();
+        
+        if (currentSessionId === session.id) {
+          if (sessions.length > 0) {
+            selectSession(sessions[0].id);
+          } else {
+            currentSessionId = null;
+            renderMessages([]);
           }
-        } catch (err) {
-          console.error(err);
-          alert("Could not delete conversation. Please try again.");
         }
+      } catch (err) {
+        console.error(err);
+        alert("Could not delete conversation. Please try again.");
       }
     });
 
     sessionList.appendChild(item);
   });
+}
+
+function scrollToBottom(smooth = true) {
+  const chatContainer = document.getElementById("chatContainer");
+  if (!chatContainer) return;
+  chatContainer.scrollTo({
+    top: chatContainer.scrollHeight,
+    behavior: smooth ? "smooth" : "auto"
+  });
+}
+
+function setButtonStreamingState(isStreaming) {
+  const sendBtn = document.getElementById("sendBtn");
+  if (!sendBtn) return;
+  if (isStreaming) {
+    sendBtn.innerHTML = `<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="1"/></svg>`;
+    sendBtn.title = "Stop streaming";
+    sendBtn.classList.remove("btn-primary");
+    sendBtn.classList.add("bg-red-600", "hover:bg-red-700", "text-white");
+  } else {
+    sendBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 16 16"><path d="M2 8h12M10 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    sendBtn.title = "Send (Enter)";
+    sendBtn.classList.add("btn-primary");
+    sendBtn.classList.remove("bg-red-600", "hover:bg-red-700", "text-white");
+  }
 }
 
 function renderMessages(messages = []) {
@@ -314,10 +379,32 @@ function renderMessages(messages = []) {
 
   if (messages.length === 0) {
     chatContainer.innerHTML = `
-      <div class="empty-state">
-        No messages yet.
-        <br>
-        Start the conversation.
+      <div class="empty-state-greeting">
+        <div class="empty-state-logo">
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2C8 2 4 4 4 8C4 10.2 5.8 12 8 12C10.2 12 12 10.2 12 8C12 5 9.5 3 8 2Z" fill="white" opacity=".9"/>
+            <path d="M6 8.5C6.5 9.2 7.2 9.5 8 9.5" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
+            <circle cx="8" cy="14" r="1" fill="white" opacity=".5"/>
+          </svg>
+        </div>
+        <h3 class="empty-state-title">Hello, I'm your Wellness Companion</h3>
+        <p class="empty-state-text">
+          I am here to support you in building healthy habits, managing stress, or talking through whatever is on your mind. How can I help you today?
+        </p>
+        <div class="empty-state-starters">
+          <div class="empty-state-starter-card" onclick="document.getElementById('messageInput').value='What are some simple ways to relieve daily stress?'; document.getElementById('messageInput').focus();">
+            <span>What are some simple ways to relieve daily stress?</span>
+            <span style="color: #e8651a; font-weight: bold;">→</span>
+          </div>
+          <div class="empty-state-starter-card" onclick="document.getElementById('messageInput').value='How can I build consistent healthy habits?'; document.getElementById('messageInput').focus();">
+            <span>How can I build consistent healthy habits?</span>
+            <span style="color: #e8651a; font-weight: bold;">→</span>
+          </div>
+          <div class="empty-state-starter-card" onclick="document.getElementById('messageInput').value='Let us check in on my mood today'; document.getElementById('messageInput').focus();">
+            <span>Let's check in on my mood today</span>
+            <span style="color: #e8651a; font-weight: bold;">→</span>
+          </div>
+        </div>
       </div>
     `;
     return;
@@ -332,10 +419,12 @@ function renderMessages(messages = []) {
     chatContainer.appendChild(createMessageBubble(text, sender, time));
   });
 
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  scrollToBottom(false);
 }
 
 async function loadSessionMessages(sessionId) {
+  isInitialLoading = true;
+  hasMoreMessages = true;
   const chatContainer = document.getElementById("chatContainer");
   chatContainer.innerHTML = "";
   currentMessageOffset = 0;
@@ -350,10 +439,13 @@ async function loadSessionMessages(sessionId) {
     if (!response.ok) throw new Error("Failed to fetch messages");
     const messages = await response.json();
     currentMessageOffset = messages.length;
+    hasMoreMessages = messages.length >= MESSAGE_LIMIT;
     renderMessages(messages);
   } catch (error) {
     console.error("Error loading messages:", error);
     renderMessages([]);
+  } finally {
+    isInitialLoading = false;
   }
 }
 
@@ -386,12 +478,22 @@ function setupEventListeners() {
   const newChatBtn = document.getElementById("newChatBtn");
   const chatContainer = document.getElementById("chatContainer");
 
-  sendBtn.addEventListener("click", sendMessage);
+  sendBtn.addEventListener("click", () => {
+    if (currentAbortController) {
+      currentAbortController.abort();
+      currentAbortController = null;
+      setButtonStreamingState(false);
+    } else {
+      sendMessage();
+    }
+  });
 
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      sendMessage();
+      if (!currentAbortController) {
+        sendMessage();
+      }
     }
   });
 
@@ -446,9 +548,9 @@ function createTypingIndicator() {
   const indicator = document.createElement("div");
   indicator.className = "typing-indicator";
   indicator.innerHTML = `
-    <span></span>
-    <span></span>
-    <span></span>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
   `;
   return indicator;
 }
@@ -482,60 +584,113 @@ async function sendMessage() {
   );
 
   input.value = "";
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  scrollToBottom(true);
 
   const typingIndicator = createTypingIndicator();
   chatContainer.appendChild(typingIndicator);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  scrollToBottom(true);
+
+  let aiBubbleWrapper = null;
+  let aiBubbleText = null;
+  let cursorElement = null;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages`, {
+    currentAbortController = new AbortController();
+    setButtonStreamingState(true);
+
+    const response = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages/stream`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         message: content
-      })
+      }),
+      signal: currentAbortController.signal
     });
 
     typingIndicator.remove();
 
     if (!response.ok) throw new Error("Failed to send message");
 
-    const messages = await response.json(); // [user_message, ai_message]
-    const aiMessage = messages.find((m) => m.sender === "assistant");
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
 
-    if (aiMessage) {
-      chatContainer.appendChild(
-        createMessageBubble(
-          aiMessage.message,
-          "assistant",
-          new Date(aiMessage.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        )
-      );
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
 
-      // Update session preview in the list
-      const currentSession = sessions.find((s) => s.id === currentSessionId);
-      if (currentSession) {
-        currentSession.preview = aiMessage.message;
-        currentSession.last_message_at = aiMessage.created_at;
-        renderSessionList();
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop(); // keep last incomplete line
+
+      for (const line of lines) {
+        const cleanLine = line.trim();
+        if (!cleanLine.startsWith("data:")) continue;
+
+        const dataStr = cleanLine.substring(5).trim();
+        if (!dataStr) continue;
+
+        try {
+          const data = JSON.parse(dataStr);
+          if (data.type === "token") {
+            if (!aiBubbleWrapper) {
+              aiBubbleWrapper = createMessageBubble("", "assistant", "Now");
+              aiBubbleText = aiBubbleWrapper.querySelector(".bubble-ai p");
+              
+              cursorElement = document.createElement("span");
+              cursorElement.className = "streaming-cursor";
+              aiBubbleWrapper.querySelector(".bubble-ai").insertBefore(cursorElement, aiBubbleWrapper.querySelector(".msg-actions"));
+
+              chatContainer.appendChild(aiBubbleWrapper);
+            }
+
+            aiBubbleText.textContent += data.content;
+            scrollToBottom(true);
+          } else if (data.type === "done") {
+            if (data.message && aiBubbleWrapper) {
+              const formattedTime = new Date(data.message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              const timeSpan = aiBubbleWrapper.querySelector(".msg-time");
+              if (timeSpan) timeSpan.textContent = formattedTime;
+
+              const currentSession = sessions.find((s) => s.id === currentSessionId);
+              if (currentSession) {
+                currentSession.preview = data.message.message;
+                currentSession.last_message_at = data.message.created_at;
+                renderSessionList();
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Error parsing stream chunk:", e);
+        }
       }
     }
   } catch (error) {
-    console.error(error);
-    typingIndicator.remove();
-    chatContainer.appendChild(
-      createMessageBubble(
-        "Unable to send message. Please check your connection and try again.",
-        "assistant",
-        "Now"
-      )
-    );
+    if (error.name === "AbortError") {
+      console.log("Streaming aborted by user");
+    } else {
+      console.error(error);
+      typingIndicator.remove();
+      chatContainer.appendChild(
+        createMessageBubble(
+          "Unable to send message. Please check your connection and try again.",
+          "assistant",
+          "Now"
+        )
+      );
+    }
+  } finally {
+    if (cursorElement) {
+      cursorElement.remove();
+    }
+    typingIndicator.remove(); // safeguard
+    currentAbortController = null;
+    setButtonStreamingState(false);
+    scrollToBottom(true);
+    initializeChat();
   }
-
-  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 async function createNewSession() {
@@ -567,13 +722,19 @@ async function createNewSession() {
 
 function handleInfiniteScroll() {
   const chatContainer = document.getElementById("chatContainer");
-  if (chatContainer.scrollTop === 0 && !isLoadingOlderMessages) {
+  if (
+    chatContainer.scrollTop === 0 &&
+    !isLoadingOlderMessages &&
+    !isInitialLoading &&
+    hasMoreMessages &&
+    chatContainer.scrollHeight > chatContainer.clientHeight
+  ) {
     loadOlderMessages();
   }
 }
 
 async function loadOlderMessages() {
-  if (!currentSessionId) return;
+  if (!currentSessionId || isInitialLoading || isLoadingOlderMessages || !hasMoreMessages) return;
   isLoadingOlderMessages = true;
 
   const chatContainer = document.getElementById("chatContainer");
@@ -586,6 +747,7 @@ async function loadOlderMessages() {
 
     if (messages.length > 0) {
       currentMessageOffset += messages.length;
+      hasMoreMessages = messages.length >= MESSAGE_LIMIT;
 
       // Since the endpoint returns oldest first, we prepend them in order
       messages.forEach((message) => {
@@ -600,10 +762,136 @@ async function loadOlderMessages() {
       const newHeight = chatContainer.scrollHeight;
       chatContainer.scrollTop = newHeight - previousHeight;
       console.log("Loaded older messages");
+    } else {
+      hasMoreMessages = false;
     }
   } catch (error) {
     console.error("Error loading older messages:", error);
   } finally {
     isLoadingOlderMessages = false;
   }
+}
+
+// ─── Onboarding Tooltip Flow ───
+let currentTooltipElement = null;
+
+function startOnboardingTour() {
+  if (localStorage.getItem("hasCompletedOnboarding")) return;
+  showOnboardingStep(0);
+}
+
+function showOnboardingStep(stepIndex) {
+  closeOnboardingTour();
+
+  const steps = [
+    {
+      targetId: "newChatBtn",
+      text: "Start a new conversation thread anytime right here.",
+      arrow: "arrow-top",
+      offsetX: 0,
+      offsetY: 8
+    },
+    {
+      targetId: "sidebarMoodRow",
+      text: "Log how you are feeling to track your mood changes over time.",
+      arrow: "arrow-top",
+      offsetX: 0,
+      offsetY: 8
+    },
+    {
+      targetId: "messageInput",
+      text: "Type here to share your thoughts with your AI Wellness Companion.",
+      arrow: "arrow-bottom",
+      offsetX: 0,
+      offsetY: -105
+    }
+  ];
+
+  if (stepIndex >= steps.length) {
+    localStorage.setItem("hasCompletedOnboarding", "true");
+    return;
+  }
+
+  const step = steps[stepIndex];
+  const target = document.getElementById(step.targetId);
+  if (!target) {
+    showOnboardingStep(stepIndex + 1);
+    return;
+  }
+
+  // Open sidebar if target is inside sidebar on mobile
+  const sidebar = document.getElementById("sidebar");
+  if (sidebar && sidebar.contains(target) && window.innerWidth < 1024) {
+    sidebar.classList.add("open");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (overlay) overlay.classList.add("visible", "show");
+  }
+
+  // Highlight target element
+  target.classList.add("onboarding-highlight");
+
+  // Create tooltip
+  const tooltip = document.createElement("div");
+  tooltip.className = `onboarding-tooltip ${step.arrow}`;
+  tooltip.innerHTML = `
+    <div style="margin-bottom: 12px; font-weight: 500;">${step.text}</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+      <button class="onboarding-btn-skip">Skip</button>
+      <button class="onboarding-btn-next">${stepIndex === steps.length - 1 ? 'Finish' : 'Next'}</button>
+    </div>
+  `;
+
+  document.body.appendChild(tooltip);
+  currentTooltipElement = tooltip;
+
+  // Position tooltip relative to target bounding box
+  const rect = target.getBoundingClientRect();
+  const topPos = rect.top + window.scrollY + step.offsetY + (step.arrow === 'arrow-top' ? rect.height : 0);
+  const leftPos = rect.left + window.scrollX + (rect.width / 2) - 140;
+
+  tooltip.style.top = `${Math.max(10, topPos)}px`;
+  tooltip.style.left = `${Math.max(10, leftPos)}px`;
+
+  // Attach event handlers
+  tooltip.querySelector(".onboarding-btn-skip").addEventListener("click", () => {
+    localStorage.setItem("hasCompletedOnboarding", "true");
+    closeOnboardingTour();
+  });
+
+  tooltip.querySelector(".onboarding-btn-next").addEventListener("click", () => {
+    target.classList.remove("onboarding-highlight");
+    
+    // Close sidebar on mobile if transitioning to input field
+    const nextStep = steps[stepIndex + 1];
+    if (sidebar && nextStep && window.innerWidth < 1024) {
+      const nextTarget = document.getElementById(nextStep.targetId);
+      if (nextTarget && !sidebar.contains(nextTarget)) {
+        sidebar.classList.remove("open");
+        const overlay = document.getElementById("sidebarOverlay");
+        if (overlay) {
+          overlay.classList.remove("show");
+          setTimeout(() => overlay.classList.remove("visible"), 280);
+        }
+      }
+    } else if (!nextStep && sidebar && window.innerWidth < 1024) {
+      sidebar.classList.remove("open");
+      const overlay = document.getElementById("sidebarOverlay");
+      if (overlay) {
+        overlay.classList.remove("show");
+        setTimeout(() => overlay.classList.remove("visible"), 280);
+      }
+    }
+    
+    showOnboardingStep(stepIndex + 1);
+  });
+}
+
+function closeOnboardingTour() {
+  if (currentTooltipElement) {
+    currentTooltipElement.remove();
+    currentTooltipElement = null;
+  }
+  document.querySelectorAll(".onboarding-highlight").forEach(el => {
+    el.classList.remove("onboarding-highlight");
+  });
 }

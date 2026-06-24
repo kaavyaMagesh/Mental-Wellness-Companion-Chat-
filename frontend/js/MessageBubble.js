@@ -4,7 +4,7 @@ export function createMessageBubble(
   timestamp
 ) {
   const wrapper = document.createElement("div");
-  wrapper.className = `message-row ${sender === "user" ? "user-row" : "ai-row"} group`;
+  wrapper.className = `message-row ${sender === "user" ? "user-row message-user" : "ai-row message-ai"} group`;
 
   const bubble = document.createElement("div");
   bubble.className = sender === "user" ? "bubble-user" : "bubble-ai";
@@ -12,12 +12,6 @@ export function createMessageBubble(
   const messageText = document.createElement("p");
   messageText.textContent = text;
   bubble.appendChild(messageText);
-
-  // Time stamp element
-  const timestampElement = document.createElement("span");
-  timestampElement.className = "msg-time block";
-  timestampElement.textContent = timestamp;
-  bubble.appendChild(timestampElement);
 
   // Hover actions (optional bonus to match design spec)
   const actions = document.createElement("div");
@@ -30,5 +24,12 @@ export function createMessageBubble(
   bubble.appendChild(actions);
 
   wrapper.appendChild(bubble);
+
+  // Time stamp element (placed outside bubble for premium styling and high readability)
+  const timestampElement = document.createElement("span");
+  timestampElement.className = "msg-time block px-1";
+  timestampElement.textContent = timestamp;
+  wrapper.appendChild(timestampElement);
+
   return wrapper;
 }
