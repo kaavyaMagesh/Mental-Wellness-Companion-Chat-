@@ -15,39 +15,50 @@ import google.generativeai as genai
 from sse_starlette.sse import EventSourceResponse
 from app.context_manager import build_llm_context
 from app.rate_limiter import check_rate_limits
+from app.llm.memory_manager import MemoryManager
+from app.llm.agents import generate_chat_response, summarize_history
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
-async def mock_generate_ai_reply(context: list) -> dict:
-    """Mock AI Service simulating a fast response."""
-    await asyncio.sleep(1) # Simulate network latency
-    
-    # Extract the last user message from context to drive the mock logic
-    user_message = context[-1]["content"] if context else ""
-    
-    # Very simple mock logic matching the blueprint's sample response
-    if "anxious" in user_message.lower() or "placement" in user_message.lower():
-        reply = "That is a common pressure point for final-year students. Let us slow this down a bit. What feels most uncertain right now?"
-    else:
-        reply = "I hear you. Tell me more about how that makes you feel."
-        
-    return {
-        "reply": reply,
-        "tokens_used": 42,
-        "risk_flag": False
-    }
+# Global dictionary to cache MemoryManager instances
+memory_managers = {}
+
+def get_memory_manager(user_id: str) -> MemoryManager:
+    if user_id not in memory_managers:
+        memory_managers[user_id] = MemoryManager(user_id=user_id)
+    return memory_managers[user_id]
+
 
 @router.post("/sessions/{session_id}/messages", response_model=List[MessageResponse], status_code=status.HTTP_201_CREATED, dependencies=[Depends(check_rate_limits)])
 async def send_message(session_id: UUID, payload: MessageCreate, db: Client = Depends(get_supabase_client)):
     try:
-        # 1. Build LLM Context Window
-        llm_context = build_llm_context(db, session_id, payload.message)
+        # 1. Get Memory Manager
+        memory_manager = get_memory_manager(MOCK_USER_ID)
+        
+        # 2. Fetch System Context
+        session_res = db.table("chat_sessions").select("system_context").eq("id", str(session_id)).execute()
+        system_context = session_res.data[0].get("system_context", "") if session_res.data else ""
 
-        # 2. Insert User Message
+        # 3. Retrieve holistic memory context
+        context = memory_manager.get_context(current_query=payload.message)
+
+        # 4. Generate response via LangChain Agent
+        response_text = generate_chat_response(payload.message, context, system_context)
+
+        # 5. Add messages to MemoryManager
+        memory_manager.add_message(role="user", content=payload.message)
+        memory_manager.add_message(role="assistant", content=response_text)
+
+        # 6. Trigger background summarization if short-term memory is getting too long
+        memory_manager.trigger_summary_if_needed(llm_summarizer_func=summarize_history)
+
+        # 7. Insert User Message to Supabase
         user_msg_data = {
             "session_id": str(session_id),
             "user_id": MOCK_USER_ID,
             "sender": "user",
             "message": payload.message,
-            "tokens_used": 0,
+            "tokens_used": int(len(payload.message.split()) * 1.3),
             "risk_flag": False,
             "metadata": {}
         }
@@ -58,18 +69,15 @@ async def send_message(session_id: UUID, payload: MessageCreate, db: Client = De
             
         user_message_row = user_res.data[0]
         
-        # 3. Call AI Service (Mock) using the full context window
-        ai_response = await mock_generate_ai_reply(llm_context)
-        
-        # 3. Insert AI Message
+        # 8. Insert AI Message to Supabase
         ai_msg_data = {
             "session_id": str(session_id),
             "user_id": MOCK_USER_ID,
             "sender": "assistant",
-            "message": ai_response["reply"],
-            "tokens_used": ai_response["tokens_used"],
-            "risk_flag": ai_response["risk_flag"],
-            "metadata": {"agent": "mock-ai"}
+            "message": response_text,
+            "tokens_used": int(len(response_text.split()) * 1.3),
+            "risk_flag": False,
+            "metadata": {"agent": "langchain"}
         }
         
         ai_res = db.table("chat_messages").insert(ai_msg_data).execute()
@@ -78,7 +86,7 @@ async def send_message(session_id: UUID, payload: MessageCreate, db: Client = De
             
         ai_message_row = ai_res.data[0]
         
-        # 4. Update Session timestamp
+        # 9. Update Session timestamp
         # Using a raw query payload for last_message_at isn't trivial in supabase-py without RPC,
         # so we will rely on the default timestamp if possible or skip the exact now() for the mock.
         # Let's skip the exact time update for now or just fetch current ISO time:
@@ -101,22 +109,29 @@ async def stream_message(session_id: UUID, payload: MessageCreate, db: Client = 
     Handles backpressure and client disconnects natively via sse-starlette.
     """
     try:
-        # 1. Build Context
-        llm_context = build_llm_context(db, session_id, payload.message)
+        # 1. Get Memory Manager
+        memory_manager = get_memory_manager(MOCK_USER_ID)
         
-        # 2. Save User Message
+        # 2. Fetch System Context
+        session_res = db.table("chat_sessions").select("system_context").eq("id", str(session_id)).execute()
+        system_context = session_res.data[0].get("system_context", "") if session_res.data else ""
+
+        # 3. Retrieve holistic memory context
+        context = memory_manager.get_context(current_query=payload.message)
+        
+        # 4. Save User Message
         user_msg_data = {
             "session_id": str(session_id),
             "user_id": MOCK_USER_ID,
             "sender": "user",
             "message": payload.message,
-            "tokens_used": 0,
+            "tokens_used": int(len(payload.message.split()) * 1.3),
             "risk_flag": False,
             "metadata": {}
         }
         db.table("chat_messages").insert(user_msg_data).execute()
         
-        # 3. Setup Gemini API
+        # 5. Setup Gemini API with LangChain
         gemini_key = os.getenv("GEMINI_API_KEY")
         
         async def event_generator():
@@ -124,52 +139,56 @@ async def stream_message(session_id: UUID, payload: MessageCreate, db: Client = 
             tokens_used = 0
             
             if gemini_key:
-                genai.configure(api_key=gemini_key)
-                # Convert context array to Gemini format
-                # Gemini format: [{'role': 'user'|'model', 'parts': ['text']}]
-                # System prompt needs to be passed to model init or prepended
-                gemini_history = []
-                system_instruction = ""
-                
-                for msg in llm_context:
-                    if msg["role"] == "system":
-                        system_instruction += msg["content"] + "\n"
-                    elif msg["role"] == "user":
-                        gemini_history.append({"role": "user", "parts": [msg["content"]]})
-                    elif msg["role"] == "assistant":
-                        gemini_history.append({"role": "model", "parts": [msg["content"]]})
-                
-                # Gemini strictly alternates user/model. If history ends with model and new message is user, we are fine.
-                # Actually, the last message in llm_context is the new user message. We pop it out to send as `send_message`.
-                new_msg_str = ""
-                if gemini_history and gemini_history[-1]["role"] == "user":
-                    new_msg_str = gemini_history.pop()["parts"][0]
-                
-                model = genai.GenerativeModel('gemini-1.5-flash', system_instruction=system_instruction)
-                chat = model.start_chat(history=gemini_history)
+                system_prompt = f"""You are a highly capable AI assistant with infinite memory capability.
+You have access to the user's conversational history. Use it to provide highly personalized, accurate responses.
+
+{system_context}
+
+[MID-TERM MEMORY: ROLLING SUMMARY]
+{context['rolling_summary'] if context['rolling_summary'] else 'No earlier summary available.'}
+
+[LONG-TERM MEMORY: RELEVANT PAST MESSAGES]
+The following past messages are semantically related to the user's current query:
+{chr(10).join(context['relevant_past']) if context['relevant_past'] else 'None found.'}
+
+Always naturally weave this past context into your responses when relevant, but do not explicitly state "according to my long-term memory".
+"""
+                messages = [SystemMessage(content=system_prompt)]
+                for msg in context['short_term']:
+                    if msg['role'] == 'user':
+                        messages.append(HumanMessage(content=msg['content']))
+                    else:
+                        messages.append(AIMessage(content=msg['content']))
+                messages.append(HumanMessage(content=payload.message))
+
+                model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.7, google_api_key=gemini_key, convert_system_message_to_human=True)
                 
                 try:
-                    response = chat.send_message(new_msg_str, stream=True)
-                    for chunk in response:
-                        if chunk.text:
-                            full_response += chunk.text
-                            # Approx token tracking
-                            tokens_used += len(chunk.text.split()) * 1.3
-                            yield {"data": chunk.text}
-                            await asyncio.sleep(0.01) # Small sleep for yielding control
+                    async for chunk in model.astream(messages):
+                        if chunk.content:
+                            full_response += chunk.content
+                            tokens_used += len(chunk.content.split()) * 1.3
+                            yield {"data": chunk.content}
+                            await asyncio.sleep(0.01)
                 except Exception as e:
                     yield {"event": "error", "data": str(e)}
             else:
                 # Mock Streaming fallback
                 await asyncio.sleep(0.5)
-                chunks = ["This ", "is ", "a ", "mock ", "streaming ", "response ", "from ", "the ", "backend."]
+                chunks = ["System Error: LLM API key not configured. ", "Please set ", "GEMINI_API_KEY ", "in .env"]
                 for chunk in chunks:
                     full_response += chunk
                     tokens_used += 2
                     yield {"data": chunk}
                     await asyncio.sleep(0.1)
             
-            # 4. Save AI Response post-stream
+            # 6. Save to MemoryManager
+            if full_response:
+                memory_manager.add_message(role="user", content=payload.message)
+                memory_manager.add_message(role="assistant", content=full_response)
+                memory_manager.trigger_summary_if_needed(llm_summarizer_func=summarize_history)
+
+            # 7. Save AI Response post-stream to Supabase
             if full_response:
                 ai_msg_data = {
                     "session_id": str(session_id),
@@ -178,7 +197,7 @@ async def stream_message(session_id: UUID, payload: MessageCreate, db: Client = 
                     "message": full_response,
                     "tokens_used": int(tokens_used),
                     "risk_flag": False,
-                    "metadata": {"agent": "gemini" if gemini_key else "mock-stream"}
+                    "metadata": {"agent": "langchain" if gemini_key else "mock-stream"}
                 }
                 db.table("chat_messages").insert(ai_msg_data).execute()
                 

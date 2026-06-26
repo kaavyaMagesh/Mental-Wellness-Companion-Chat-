@@ -1,0 +1,20 @@
+# Environments
+.env
+backend/venv/
+backend/.venv/
+venv/
+env/
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+
+# Databases and Local Storage
+backend/chroma_db/
+backend/storage/
+*.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db
