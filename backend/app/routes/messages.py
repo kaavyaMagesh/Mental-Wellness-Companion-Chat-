@@ -11,7 +11,6 @@ router = APIRouter()
 MOCK_USER_ID = "00000000-0000-0000-0000-000000000000"
 
 import os
-import google.generativeai as genai
 from sse_starlette.sse import EventSourceResponse
 from app.context_manager import build_llm_context
 from app.rate_limiter import check_rate_limits
@@ -105,7 +104,7 @@ async def send_message(session_id: UUID, payload: MessageCreate, db: Client = De
 @router.post("/sessions/{session_id}/stream", dependencies=[Depends(check_rate_limits)])
 async def stream_message(session_id: UUID, payload: MessageCreate, db: Client = Depends(get_supabase_client)):
     """
-    Server-Sent Events endpoint that proxies Gemini stream to the client.
+    Server-Sent Events endpoint that proxies Groq stream to the client.
     Handles backpressure and client disconnects natively via sse-starlette.
     """
     try:
@@ -131,14 +130,14 @@ async def stream_message(session_id: UUID, payload: MessageCreate, db: Client = 
         }
         db.table("chat_messages").insert(user_msg_data).execute()
         
-        # 5. Setup Gemini API with LangChain
-        gemini_key = os.getenv("GEMINI_API_KEY")
+        # 5. Setup Groq API
+        groq_key = os.getenv("GROQ_API_KEY")
         
         async def event_generator():
             full_response = ""
             tokens_used = 0
             
-            if gemini_key:
+            if groq_key:
                 system_prompt = f"""You are a highly capable AI assistant with infinite memory capability.
 You have access to the user's conversational history. Use it to provide highly personalized, accurate responses.
 
@@ -153,29 +152,36 @@ The following past messages are semantically related to the user's current query
 
 Always naturally weave this past context into your responses when relevant, but do not explicitly state "according to my long-term memory".
 """
-                messages = [SystemMessage(content=system_prompt)]
+                groq_messages = [{"role": "system", "content": system_prompt}]
                 for msg in context['short_term']:
-                    if msg['role'] == 'user':
-                        messages.append(HumanMessage(content=msg['content']))
-                    else:
-                        messages.append(AIMessage(content=msg['content']))
-                messages.append(HumanMessage(content=payload.message))
+                    groq_messages.append({"role": msg['role'], "content": msg['content']})
+                groq_messages.append({"role": "user", "content": payload.message})
 
-                model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.7, google_api_key=gemini_key, convert_system_message_to_human=True)
+                from groq import AsyncGroq
+                client = AsyncGroq(api_key=groq_key)
                 
                 try:
-                    async for chunk in model.astream(messages):
-                        if chunk.content:
-                            full_response += chunk.content
-                            tokens_used += len(chunk.content.split()) * 1.3
-                            yield {"data": chunk.content}
-                            await asyncio.sleep(0.01)
+                    stream = await client.chat.completions.create(
+                        messages=groq_messages,
+                        model="qwen/qwen3.6-27b",
+                        temperature=0.6,
+                        max_completion_tokens=4096,
+                        top_p=0.95,
+                        stream=True
+                    )
+                    async for chunk in stream:
+                        content = chunk.choices[0].delta.content
+                        if content:
+                            full_response += content
+                            tokens_used += len(content.split()) * 1.3
+                            yield {"data": content}
+                            await asyncio.sleep(0.01) # Yield control
                 except Exception as e:
                     yield {"event": "error", "data": str(e)}
             else:
                 # Mock Streaming fallback
                 await asyncio.sleep(0.5)
-                chunks = ["System Error: LLM API key not configured. ", "Please set ", "GEMINI_API_KEY ", "in .env"]
+                chunks = ["System Error: LLM API key not configured. ", "Please set ", "GROQ_API_KEY ", "in .env"]
                 for chunk in chunks:
                     full_response += chunk
                     tokens_used += 2
@@ -197,7 +203,7 @@ Always naturally weave this past context into your responses when relevant, but 
                     "message": full_response,
                     "tokens_used": int(tokens_used),
                     "risk_flag": False,
-                    "metadata": {"agent": "langchain" if gemini_key else "mock-stream"}
+                    "metadata": {"agent": "groq" if groq_key else "mock-stream"}
                 }
                 db.table("chat_messages").insert(ai_msg_data).execute()
                 

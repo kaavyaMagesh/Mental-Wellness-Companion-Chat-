@@ -34,7 +34,7 @@ def build_llm_context(db: Client, session_id: UUID, new_message: str) -> List[Di
     system_context = ""
     user_id = None
     if session_res.data:
-        system_context = session_res.data[0].get("system_context", "")
+        system_context = session_res.data[0].get("system_context") or ""
         user_id = session_res.data[0].get("user_id")
 
     # 2. Refine Context Window (Moods, Journals, Name)
@@ -106,6 +106,7 @@ def build_llm_context(db: Client, session_id: UUID, new_message: str) -> List[Di
         dropped_msg = context.pop(drop_idx)
         dropped_tokens = estimate_tokens(dropped_msg["content"])
         total_tokens -= dropped_tokens
+        #logging
         logger.info(f"Dropped message from context to fit budget. Freed {dropped_tokens} tokens.")
         
     return context
