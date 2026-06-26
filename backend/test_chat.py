@@ -47,7 +47,7 @@ async def chat_loop():
     await measure_query_latency()
 
     print("🔌 CHAT STREAMING BACKEND (SSE)")
-    print("Status: LIVE. Powered by Groq (llama3-8b-8192) and SSE Starlette.")
+    print("Status: LIVE. Powered by Gemini 2.5 Flash and SSE Starlette.")
     print("Enter 'quit' to exit.\n")
     
     # Create a fresh session

@@ -130,14 +130,14 @@ async def stream_message(session_id: UUID, payload: MessageCreate, db: Client = 
         }
         db.table("chat_messages").insert(user_msg_data).execute()
         
-        # 5. Setup Groq API
-        groq_key = os.getenv("GROQ_API_KEY")
+        # 5. Setup Gemini 2.5 Flash API
+        gemini_key = os.getenv("GEMINI_API_KEY")
         
         async def event_generator():
             full_response = ""
             tokens_used = 0
             
-            if groq_key:
+            if gemini_key:
                 system_prompt = f"""You are a highly capable AI assistant with infinite memory capability.
 You have access to the user's conversational history. Use it to provide highly personalized, accurate responses.
 
@@ -152,36 +152,35 @@ The following past messages are semantically related to the user's current query
 
 Always naturally weave this past context into your responses when relevant, but do not explicitly state "according to my long-term memory".
 """
-                groq_messages = [{"role": "system", "content": system_prompt}]
+                
+                # Format memory into a single structured prompt for Gemini Flash
+                full_prompt = f"{system_prompt}\n\n[CONVERSATION HISTORY]\n"
                 for msg in context['short_term']:
-                    groq_messages.append({"role": msg['role'], "content": msg['content']})
-                groq_messages.append({"role": "user", "content": payload.message})
+                    role_name = "User" if msg['role'] == "user" else "Assistant"
+                    full_prompt += f"{role_name}: {msg['content']}\n"
+                
+                full_prompt += f"\nUser: {payload.message}\nAssistant:"
 
-                from groq import AsyncGroq
-                client = AsyncGroq(api_key=groq_key)
+                from google import genai
+                client = genai.Client(api_key=gemini_key)
                 
                 try:
-                    stream = await client.chat.completions.create(
-                        messages=groq_messages,
-                        model="qwen/qwen3.6-27b",
-                        temperature=0.6,
-                        max_completion_tokens=4096,
-                        top_p=0.95,
-                        stream=True
+                    stream = await client.aio.models.generate_content_stream(
+                        model="gemini-2.5-flash",
+                        contents=full_prompt
                     )
                     async for chunk in stream:
-                        content = chunk.choices[0].delta.content
-                        if content:
-                            full_response += content
-                            tokens_used += len(content.split()) * 1.3
-                            yield {"data": content}
+                        if chunk.text:
+                            full_response += chunk.text
+                            tokens_used += len(chunk.text.split()) * 1.3
+                            yield {"data": chunk.text}
                             await asyncio.sleep(0.01) # Yield control
                 except Exception as e:
                     yield {"event": "error", "data": str(e)}
             else:
                 # Mock Streaming fallback
                 await asyncio.sleep(0.5)
-                chunks = ["System Error: LLM API key not configured. ", "Please set ", "GROQ_API_KEY ", "in .env"]
+                chunks = ["System Error: LLM API key not configured. ", "Please set ", "GEMINI_API_KEY ", "in .env"]
                 for chunk in chunks:
                     full_response += chunk
                     tokens_used += 2
@@ -203,7 +202,7 @@ Always naturally weave this past context into your responses when relevant, but 
                     "message": full_response,
                     "tokens_used": int(tokens_used),
                     "risk_flag": False,
-                    "metadata": {"agent": "groq" if groq_key else "mock-stream"}
+                    "metadata": {"agent": "gemini" if gemini_key else "mock-stream"}
                 }
                 db.table("chat_messages").insert(ai_msg_data).execute()
                 
