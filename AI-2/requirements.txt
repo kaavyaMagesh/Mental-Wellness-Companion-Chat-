@@ -1,0 +1,8 @@
+tiktoken
+requests
+python-dotenv
+psycopg2-binary
+gradio_client
+fastapi
+uvicorn
+google-genai

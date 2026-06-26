@@ -1,0 +1,130 @@
+[
+  {
+    "event_id": "2d0030e3-3e18-4a26-9dbd-b7160fe18b71",
+    "timestamp": "2026-06-24T14:48:29.126104",
+    "message": "I want to kill myself",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "94127844-d82d-4f37-884c-3276775a7e12",
+    "timestamp": "2026-06-24T14:52:26.542542",
+    "message": "I want to kill myself",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "e25f9280-11cb-4b75-9c4d-a59e15ec04cf",
+    "timestamp": "2026-06-25T14:52:32.383453",
+    "message": "I want to kill myself.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "f5af6fac-02d8-4c60-950c-cd1d54c70737",
+    "timestamp": "2026-06-25T14:52:32.406141",
+    "message": "I have a suicide plan.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "afc1024d-8961-4947-907a-550153e98c67",
+    "timestamp": "2026-06-25T14:52:35.509143",
+    "message": "I'm ending everything tonight.",
+    "tier": "embedding_detected",
+    "severity": "high",
+    "risk_score": 70
+  },
+  {
+    "event_id": "351874ba-f1eb-47d5-ad35-e88d898c4e50",
+    "timestamp": "2026-06-25T14:52:35.525144",
+    "message": "I already wrote my suicide note.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "204a1aac-fdbb-4f24-bf92-c5945ad87856",
+    "timestamp": "2026-06-25T14:52:35.540348",
+    "message": "I want to overdose.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "458ed235-f6d3-48f3-9421-7a90893a0d1a",
+    "timestamp": "2026-06-25T14:52:49.506028",
+    "message": "I'm burned out.",
+    "tier": "embedding_detected",
+    "severity": "high",
+    "risk_score": 70
+  },
+  {
+    "event_id": "3b5f73e5-80d6-4f95-9661-40ae68df751e",
+    "timestamp": "2026-06-25T14:52:52.074619",
+    "message": "How does suicide prevention work?",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "26c8d7f0-16e8-40f9-bbf0-fc72b5c6a828",
+    "timestamp": "2026-06-25T15:05:12.689338",
+    "message": "I want to kill myself.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "fdbbf6f1-e171-4fd1-8d2b-a4d84a9e726c",
+    "timestamp": "2026-06-25T15:05:12.706383",
+    "message": "I have a suicide plan.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "42ec70bb-7929-428c-a01a-3efe3eb2a17a",
+    "timestamp": "2026-06-25T15:05:15.817635",
+    "message": "I'm ending everything tonight.",
+    "tier": "embedding_detected",
+    "severity": "high",
+    "risk_score": 70
+  },
+  {
+    "event_id": "3a139ee9-7091-41e4-95f3-ea5cd3ee426e",
+    "timestamp": "2026-06-25T15:05:15.831378",
+    "message": "I already wrote my suicide note.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "769d0980-77f8-4b07-a210-4cf026ba5cee",
+    "timestamp": "2026-06-25T15:05:15.848344",
+    "message": "I want to overdose.",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  },
+  {
+    "event_id": "21bf7160-5aa3-4378-8a7a-c4ed62ce60c1",
+    "timestamp": "2026-06-25T15:05:30.390092",
+    "message": "I'm burned out.",
+    "tier": "embedding_detected",
+    "severity": "high",
+    "risk_score": 70
+  },
+  {
+    "event_id": "2a865c89-3188-4e17-a6ce-e851ad805c30",
+    "timestamp": "2026-06-25T15:05:48.714380",
+    "message": "How does suicide prevention work?",
+    "tier": "tier_1",
+    "severity": "critical",
+    "risk_score": 100
+  }
+]

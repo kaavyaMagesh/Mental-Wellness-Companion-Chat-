@@ -1,0 +1,403 @@
+[
+  {
+    "text": "I want to kill myself",
+    "label": 1
+  },
+  {
+    "text": "I don't want to live anymore",
+    "label": 1
+  },
+  {
+    "text": "I am going to end my life",
+    "label": 1
+  },
+  {
+    "text": "I want to die",
+    "label": 1
+  },
+  {
+    "text": "I wish I was dead",
+    "label": 1
+  },
+  {
+    "text": "Life is not worth living",
+    "label": 1
+  },
+  {
+    "text": "I am thinking about suicide",
+    "label": 1
+  },
+  {
+    "text": "I have suicidal thoughts",
+    "label": 1
+  },
+  {
+    "text": "I am planning to kill myself",
+    "label": 1
+  },
+  {
+    "text": "I want to jump off a bridge",
+    "label": 1
+  },
+  {
+    "text": "I want to overdose",
+    "label": 1
+  },
+  {
+    "text": "I cut myself today",
+    "label": 1
+  },
+  {
+    "text": "I am harming myself",
+    "label": 1
+  },
+  {
+    "text": "I want to hang myself",
+    "label": 1
+  },
+  {
+    "text": "I wrote a suicide note",
+    "label": 1
+  },
+  {
+    "text": "I took too many pills",
+    "label": 1
+  },
+  {
+    "text": "I want to disappear forever",
+    "label": 1
+  },
+  {
+    "text": "I cannot go on anymore",
+    "label": 1
+  },
+  {
+    "text": "I have no reason to live",
+    "label": 1
+  },
+  {
+    "text": "Everyone would be better without me",
+    "label": 1
+  },
+  {
+    "text": "I feel like ending it all",
+    "label": 1
+  },
+  {
+    "text": "I want the pain to stop forever",
+    "label": 1
+  },
+  {
+    "text": "I don't see any future",
+    "label": 1
+  },
+  {
+    "text": "I am ready to give up on life",
+    "label": 1
+  },
+  {
+    "text": "I don't want to wake up tomorrow",
+    "label": 1
+  },
+  {
+    "text": "I feel completely hopeless",
+    "label": 1
+  },
+  {
+    "text": "I am thinking of self harm",
+    "label": 1
+  },
+  {
+    "text": "I want to hurt myself",
+    "label": 1
+  },
+  {
+    "text": "I want to cut myself",
+    "label": 1
+  },
+  {
+    "text": "I am considering suicide",
+    "label": 1
+  },
+  {
+    "text": "I am making plans to die",
+    "label": 1
+  },
+  {
+    "text": "I want a painless death",
+    "label": 1
+  },
+  {
+    "text": "I don't deserve to live",
+    "label": 1
+  },
+  {
+    "text": "I cannot handle life anymore",
+    "label": 1
+  },
+  {
+    "text": "I want everything to end",
+    "label": 1
+  },
+  {
+    "text": "I wish I could vanish forever",
+    "label": 1
+  },
+  {
+    "text": "I am done with life",
+    "label": 1
+  },
+  {
+    "text": "I want to stop existing",
+    "label": 1
+  },
+  {
+    "text": "There is nothing left for me",
+    "label": 1
+  },
+  {
+    "text": "I feel trapped and want out permanently",
+    "label": 1
+  },
+  {
+    "text": "I am going to take my own life",
+    "label": 1
+  },
+  {
+    "text": "Nobody would miss me if I died",
+    "label": 1
+  },
+  {
+    "text": "I think about dying every day",
+    "label": 1
+  },
+  {
+    "text": "I want to bleed out",
+    "label": 1
+  },
+  {
+    "text": "I want to drown myself",
+    "label": 1
+  },
+  {
+    "text": "I want to poison myself",
+    "label": 1
+  },
+  {
+    "text": "I am preparing to commit suicide",
+    "label": 1
+  },
+  {
+    "text": "I have chosen how I will die",
+    "label": 1
+  },
+  {
+    "text": "I am saying goodbye to everyone",
+    "label": 1
+  },
+  {
+    "text": "I want to end my suffering permanently",
+    "label": 1
+  },
+
+  {
+    "text": "I am stressed about exams",
+    "label": 0
+  },
+  {
+    "text": "I feel anxious before interviews",
+    "label": 0
+  },
+  {
+    "text": "I had a bad day at work",
+    "label": 0
+  },
+  {
+    "text": "I am worried about my grades",
+    "label": 0
+  },
+  {
+    "text": "I cannot sleep properly",
+    "label": 0
+  },
+  {
+    "text": "I feel lonely sometimes",
+    "label": 0
+  },
+  {
+    "text": "I need help managing stress",
+    "label": 0
+  },
+  {
+    "text": "I feel overwhelmed by deadlines",
+    "label": 0
+  },
+  {
+    "text": "I am nervous about tomorrow",
+    "label": 0
+  },
+  {
+    "text": "I am struggling with anxiety",
+    "label": 0
+  },
+  {
+    "text": "I keep worrying about the future",
+    "label": 0
+  },
+  {
+    "text": "I feel sad today",
+    "label": 0
+  },
+  {
+    "text": "I miss my friends",
+    "label": 0
+  },
+  {
+    "text": "I am exhausted from work",
+    "label": 0
+  },
+  {
+    "text": "I feel burned out",
+    "label": 0
+  },
+  {
+    "text": "I had an argument with my family",
+    "label": 0
+  },
+  {
+    "text": "I am having trouble concentrating",
+    "label": 0
+  },
+  {
+    "text": "I feel unmotivated lately",
+    "label": 0
+  },
+  {
+    "text": "I am scared about my career",
+    "label": 0
+  },
+  {
+    "text": "I am worried about money",
+    "label": 0
+  },
+  {
+    "text": "I feel homesick",
+    "label": 0
+  },
+  {
+    "text": "I feel overwhelmed by responsibilities",
+    "label": 0
+  },
+  {
+    "text": "I am stressed about college",
+    "label": 0
+  },
+  {
+    "text": "I don't feel confident",
+    "label": 0
+  },
+  {
+    "text": "I am afraid of failing",
+    "label": 0
+  },
+  {
+    "text": "I keep overthinking everything",
+    "label": 0
+  },
+  {
+    "text": "I am feeling down today",
+    "label": 0
+  },
+  {
+    "text": "I have been crying a lot",
+    "label": 0
+  },
+  {
+    "text": "I feel emotionally drained",
+    "label": 0
+  },
+  {
+    "text": "I feel isolated",
+    "label": 0
+  },
+  {
+    "text": "I have trouble relaxing",
+    "label": 0
+  },
+  {
+    "text": "I feel insecure about myself",
+    "label": 0
+  },
+  {
+    "text": "I am struggling to stay productive",
+    "label": 0
+  },
+  {
+    "text": "I feel lost in life",
+    "label": 0
+  },
+  {
+    "text": "I am worried about my health",
+    "label": 0
+  },
+  {
+    "text": "I am scared of making mistakes",
+    "label": 0
+  },
+  {
+    "text": "I feel pressure from expectations",
+    "label": 0
+  },
+  {
+    "text": "I am having panic attacks",
+    "label": 0
+  },
+  {
+    "text": "I feel heartbroken after a breakup",
+    "label": 0
+  },
+  {
+    "text": "I am grieving a loss",
+    "label": 0
+  },
+  {
+    "text": "I feel disconnected from people",
+    "label": 0
+  },
+  {
+    "text": "I have trouble sleeping at night",
+    "label": 0
+  },
+  {
+    "text": "I feel overwhelmed at work",
+    "label": 0
+  },
+  {
+    "text": "I am stressed about an upcoming presentation",
+    "label": 0
+  },
+  {
+    "text": "I feel anxious in social situations",
+    "label": 0
+  },
+  {
+    "text": "I don't know how to manage my emotions",
+    "label": 0
+  },
+  {
+    "text": "I feel frustrated with myself",
+    "label": 0
+  },
+  {
+    "text": "I am struggling with loneliness",
+    "label": 0
+  },
+  {
+    "text": "I need help coping with stress",
+    "label": 0
+  },
+  {
+    "text": "I want to improve my mental wellbeing",
+    "label": 0
+  }
+]

@@ -1,0 +1,13 @@
+# Relationship Stress: Boundaries and Appreciation
+
+## Overview
+Healthy relationships need both clear boundaries and regular appreciation. Boundaries help each person protect time, energy, and emotional space, while appreciation strengthens trust and connection. When stress rises, these two habits become even more important. They can prevent resentment from building and help the relationship feel more balanced.
+
+## Key Concepts / Symptoms
+Without boundaries, one person may feel drained, overextended, or invisible. Without appreciation, routine stress can turn into criticism or emotional distance. People may start assuming the other person knows how they feel, even when that is not true. Over time, this can weaken connection and make small conflicts harder to resolve.
+
+## Coping Strategies
+State boundaries clearly and respectfully, such as when you need quiet time or space to think. Respect the other person’s limits without taking them personally. At the same time, make appreciation a daily habit by noticing effort, kindness, or support. Small expressions of gratitude can reduce tension and make hard conversations easier.
+
+## When to Seek Support
+If boundaries are constantly ignored or appreciation has disappeared from the relationship, outside support may help. Counseling can help couples or family members rebuild respect, clarity, and emotional safety.
