@@ -1,0 +1,32 @@
+config:
+  target: "http://127.0.0.1:8000"
+  phases:
+    - duration: 30
+      arrivalRate: 3
+      name: "Sustained load"
+    # No payload needed since we create sessions dynamically
+scenarios:
+  - name: "Chat Interaction Flow"
+    flow:
+      - post:
+          url: "/api/chat/sessions"
+          json:
+            title: "Load Test Session"
+            system_context: "You are a load testing assistant."
+          capture:
+            - json: "$.id"
+              as: "session_id"
+      - post:
+          url: "/api/chat/sessions/{{ session_id }}/messages"
+          json:
+            message: "Hello, I need some help."
+          # We expect 201 or 429 if rate limited
+          expect:
+            - statusCode: 
+                - 201
+                - 429
+      - think: 1
+      - get:
+          url: "/api/chat/sessions/{{ session_id }}/messages?limit=10&offset=0"
+          expect:
+            - statusCode: 200

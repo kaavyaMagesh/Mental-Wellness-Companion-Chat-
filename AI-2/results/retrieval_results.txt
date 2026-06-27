@@ -1,0 +1,1658 @@
+
+================================================================================
+QUERY: How can I reduce stress?
+EXPECTED TOPIC: STRESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : STRESS_005
+Similarity : 0.6987
+Topic      : Stress 5
+Content:
+# Stress 5
+
+Time management can help reduce stress.
+
+Rank 2
+Chunk ID   : STRESS_004
+Similarity : 0.6710
+Topic      : Stress 4
+Content:
+# Stress 4
+
+Regular exercise may reduce stress levels.
+
+Rank 3
+Chunk ID   : STRESS_003
+Similarity : 0.6063
+Topic      : Stress 3
+Content:
+# Stress 3
+
+Breathing exercises can help manage stress.
+
+Rank 4
+Chunk ID   : STRESS_007
+Similarity : 0.5999
+Topic      : Stress 7
+Content:
+# Stress 7
+
+Relaxation techniques may improve wellbeing.
+
+Rank 5
+Chunk ID   : STRESS_010
+Similarity : 0.5622
+Topic      : Stress 10
+Content:
+# Stress 10
+
+Journaling may help process stressful experiences.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What causes stress?
+EXPECTED TOPIC: STRESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : STRESS_001
+Similarity : 0.7269
+Topic      : Stress 1
+Content:
+# Stress 1
+
+Common causes of stress include work pressure and deadlines.
+
+Rank 2
+Chunk ID   : STRESS_002
+Similarity : 0.5790
+Topic      : Stress 2
+Content:
+# Stress 2
+
+Stress may contribute to headaches and fatigue.
+
+Rank 3
+Chunk ID   : SLEEP_009
+Similarity : 0.5561
+Topic      : Sleep 9
+Content:
+# Sleep 9
+
+Stress can affect sleep quality.
+
+Rank 4
+Chunk ID   : ANXIETY_001
+Similarity : 0.5147
+Topic      : Anxiety 1
+Content:
+# Anxiety 1
+
+Anxiety may involve excessive worry.
+
+Rank 5
+Chunk ID   : STRESS_004
+Similarity : 0.5126
+Topic      : Stress 4
+Content:
+# Stress 4
+
+Regular exercise may reduce stress levels.
+
+
+Relevant in Top5: 3
+Precision@5: 0.600
+
+================================================================================
+QUERY: How does exercise help stress?
+EXPECTED TOPIC: STRESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : STRESS_004
+Similarity : 0.7490
+Topic      : Stress 4
+Content:
+# Stress 4
+
+Regular exercise may reduce stress levels.
+
+Rank 2
+Chunk ID   : STRESS_003
+Similarity : 0.6348
+Topic      : Stress 3
+Content:
+# Stress 3
+
+Breathing exercises can help manage stress.
+
+Rank 3
+Chunk ID   : ANXIETY_004
+Similarity : 0.6270
+Topic      : Anxiety 4
+Content:
+# Anxiety 4
+
+Physical activity may help anxiety management.
+
+Rank 4
+Chunk ID   : STRESS_005
+Similarity : 0.6177
+Topic      : Stress 5
+Content:
+# Stress 5
+
+Time management can help reduce stress.
+
+Rank 5
+Chunk ID   : STRESS_007
+Similarity : 0.5977
+Topic      : Stress 7
+Content:
+# Stress 7
+
+Relaxation techniques may improve wellbeing.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: Can breathing exercises reduce stress?
+EXPECTED TOPIC: STRESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : STRESS_003
+Similarity : 0.8451
+Topic      : Stress 3
+Content:
+# Stress 3
+
+Breathing exercises can help manage stress.
+
+Rank 2
+Chunk ID   : ANXIETY_003
+Similarity : 0.6399
+Topic      : Anxiety 3
+Content:
+# Anxiety 3
+
+Deep breathing can reduce anxious feelings.
+
+Rank 3
+Chunk ID   : STRESS_007
+Similarity : 0.6166
+Topic      : Stress 7
+Content:
+# Stress 7
+
+Relaxation techniques may improve wellbeing.
+
+Rank 4
+Chunk ID   : STRESS_004
+Similarity : 0.5691
+Topic      : Stress 4
+Content:
+# Stress 4
+
+Regular exercise may reduce stress levels.
+
+Rank 5
+Chunk ID   : ANXIETY_002
+Similarity : 0.5657
+Topic      : Anxiety 2
+Content:
+# Anxiety 2
+
+Grounding exercises may help anxiety.
+
+
+Relevant in Top5: 3
+Precision@5: 0.600
+
+================================================================================
+QUERY: How can I manage work pressure?
+EXPECTED TOPIC: STRESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : STRESS_001
+Similarity : 0.4719
+Topic      : Stress 1
+Content:
+# Stress 1
+
+Common causes of stress include work pressure and deadlines.
+
+Rank 2
+Chunk ID   : STRESS_005
+Similarity : 0.4691
+Topic      : Stress 5
+Content:
+# Stress 5
+
+Time management can help reduce stress.
+
+Rank 3
+Chunk ID   : STRESS_008
+Similarity : 0.4336
+Topic      : Stress 8
+Content:
+# Stress 8
+
+Taking breaks can reduce mental overload.
+
+Rank 4
+Chunk ID   : ANXIETY_006
+Similarity : 0.4054
+Topic      : Anxiety 6
+Content:
+# Anxiety 6
+
+Breaking tasks into smaller steps may help.
+
+Rank 5
+Chunk ID   : STRESS_004
+Similarity : 0.3656
+Topic      : Stress 4
+Content:
+# Stress 4
+
+Regular exercise may reduce stress levels.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How can I manage anxiety?
+EXPECTED TOPIC: ANXIETY
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : ANXIETY_007
+Similarity : 0.7069
+Topic      : Anxiety 7
+Content:
+# Anxiety 7
+
+Talking with trusted people can provide support.
+
+Rank 2
+Chunk ID   : ANXIETY_008
+Similarity : 0.6979
+Topic      : Anxiety 8
+Content:
+# Anxiety 8
+
+Mindfulness practices may reduce anxiety.
+
+Rank 3
+Chunk ID   : ANXIETY_006
+Similarity : 0.6083
+Topic      : Anxiety 6
+Content:
+# Anxiety 6
+
+Breaking tasks into smaller steps may help.
+
+Rank 4
+Chunk ID   : ANXIETY_004
+Similarity : 0.5969
+Topic      : Anxiety 4
+Content:
+# Anxiety 4
+
+Physical activity may help anxiety management.
+
+Rank 5
+Chunk ID   : ANXIETY_005
+Similarity : 0.5627
+Topic      : Anxiety 5
+Content:
+# Anxiety 5
+
+Limiting information overload may reduce anxiety.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What are grounding exercises?
+EXPECTED TOPIC: ANXIETY
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : ANXIETY_002
+Similarity : 0.6427
+Topic      : Anxiety 2
+Content:
+# Anxiety 2
+
+Grounding exercises may help anxiety.
+
+Rank 2
+Chunk ID   : MINDFULNESS_003
+Similarity : 0.4044
+Topic      : Mindfulness 3
+Content:
+# Mindfulness 3
+
+Body scan exercises promote awareness.
+
+Rank 3
+Chunk ID   : STRESS_003
+Similarity : 0.3246
+Topic      : Stress 3
+Content:
+# Stress 3
+
+Breathing exercises can help manage stress.
+
+Rank 4
+Chunk ID   : STRESS_004
+Similarity : 0.2990
+Topic      : Stress 4
+Content:
+# Stress 4
+
+Regular exercise may reduce stress levels.
+
+Rank 5
+Chunk ID   : MINDFULNESS_002
+Similarity : 0.2955
+Topic      : Mindfulness 2
+Content:
+# Mindfulness 2
+
+Mindful breathing is a common technique.
+
+
+Relevant in Top5: 1
+Precision@5: 0.200
+
+================================================================================
+QUERY: How does deep breathing help anxiety?
+EXPECTED TOPIC: ANXIETY
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : ANXIETY_003
+Similarity : 0.8362
+Topic      : Anxiety 3
+Content:
+# Anxiety 3
+
+Deep breathing can reduce anxious feelings.
+
+Rank 2
+Chunk ID   : ANXIETY_008
+Similarity : 0.6177
+Topic      : Anxiety 8
+Content:
+# Anxiety 8
+
+Mindfulness practices may reduce anxiety.
+
+Rank 3
+Chunk ID   : STRESS_003
+Similarity : 0.6030
+Topic      : Stress 3
+Content:
+# Stress 3
+
+Breathing exercises can help manage stress.
+
+Rank 4
+Chunk ID   : ANXIETY_002
+Similarity : 0.5511
+Topic      : Anxiety 2
+Content:
+# Anxiety 2
+
+Grounding exercises may help anxiety.
+
+Rank 5
+Chunk ID   : ANXIETY_007
+Similarity : 0.5301
+Topic      : Anxiety 7
+Content:
+# Anxiety 7
+
+Talking with trusted people can provide support.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: What causes excessive worry?
+EXPECTED TOPIC: ANXIETY
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : ANXIETY_001
+Similarity : 0.7361
+Topic      : Anxiety 1
+Content:
+# Anxiety 1
+
+Anxiety may involve excessive worry.
+
+Rank 2
+Chunk ID   : ANXIETY_007
+Similarity : 0.5192
+Topic      : Anxiety 7
+Content:
+# Anxiety 7
+
+Talking with trusted people can provide support.
+
+Rank 3
+Chunk ID   : ANXIETY_005
+Similarity : 0.5177
+Topic      : Anxiety 5
+Content:
+# Anxiety 5
+
+Limiting information overload may reduce anxiety.
+
+Rank 4
+Chunk ID   : STRESS_001
+Similarity : 0.4650
+Topic      : Stress 1
+Content:
+# Stress 1
+
+Common causes of stress include work pressure and deadlines.
+
+Rank 5
+Chunk ID   : ANXIETY_010
+Similarity : 0.4459
+Topic      : Anxiety 10
+Content:
+# Anxiety 10
+
+Recognizing anxiety triggers can be useful.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How can I calm anxious feelings?
+EXPECTED TOPIC: ANXIETY
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : ANXIETY_007
+Similarity : 0.6678
+Topic      : Anxiety 7
+Content:
+# Anxiety 7
+
+Talking with trusted people can provide support.
+
+Rank 2
+Chunk ID   : ANXIETY_003
+Similarity : 0.6296
+Topic      : Anxiety 3
+Content:
+# Anxiety 3
+
+Deep breathing can reduce anxious feelings.
+
+Rank 3
+Chunk ID   : ANXIETY_008
+Similarity : 0.6267
+Topic      : Anxiety 8
+Content:
+# Anxiety 8
+
+Mindfulness practices may reduce anxiety.
+
+Rank 4
+Chunk ID   : ANXIETY_006
+Similarity : 0.5381
+Topic      : Anxiety 6
+Content:
+# Anxiety 6
+
+Breaking tasks into smaller steps may help.
+
+Rank 5
+Chunk ID   : ANXIETY_004
+Similarity : 0.5116
+Topic      : Anxiety 4
+Content:
+# Anxiety 4
+
+Physical activity may help anxiety management.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: How can I improve sleep quality?
+EXPECTED TOPIC: SLEEP
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : SLEEP_006
+Similarity : 0.7515
+Topic      : Sleep 6
+Content:
+# Sleep 6
+
+Exercise may improve sleep quality.
+
+Rank 2
+Chunk ID   : SLEEP_001
+Similarity : 0.6823
+Topic      : Sleep 1
+Content:
+# Sleep 1
+
+Consistent sleep schedules improve sleep quality.
+
+Rank 3
+Chunk ID   : SLEEP_002
+Similarity : 0.6444
+Topic      : Sleep 2
+Content:
+# Sleep 2
+
+Reducing caffeine may support better sleep.
+
+Rank 4
+Chunk ID   : SLEEP_005
+Similarity : 0.6114
+Topic      : Sleep 5
+Content:
+# Sleep 5
+
+Sleep environments should be comfortable.
+
+Rank 5
+Chunk ID   : SLEEP_010
+Similarity : 0.6050
+Topic      : Sleep 10
+Content:
+# Sleep 10
+
+Good sleep hygiene promotes healthy rest.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What is sleep hygiene?
+EXPECTED TOPIC: SLEEP
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : SLEEP_010
+Similarity : 0.6611
+Topic      : Sleep 10
+Content:
+# Sleep 10
+
+Good sleep hygiene promotes healthy rest.
+
+Rank 2
+Chunk ID   : STRESS_009
+Similarity : 0.5156
+Topic      : Stress 9
+Content:
+# Stress 9
+
+Sleep habits affect stress management.
+
+Rank 3
+Chunk ID   : SLEEP_001
+Similarity : 0.4816
+Topic      : Sleep 1
+Content:
+# Sleep 1
+
+Consistent sleep schedules improve sleep quality.
+
+Rank 4
+Chunk ID   : SLEEP_005
+Similarity : 0.4395
+Topic      : Sleep 5
+Content:
+# Sleep 5
+
+Sleep environments should be comfortable.
+
+Rank 5
+Chunk ID   : SLEEP_008
+Similarity : 0.4366
+Topic      : Sleep 8
+Content:
+# Sleep 8
+
+Natural light exposure supports sleep cycles.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: Should I avoid caffeine before bed?
+EXPECTED TOPIC: SLEEP
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : SLEEP_002
+Similarity : 0.5267
+Topic      : Sleep 2
+Content:
+# Sleep 2
+
+Reducing caffeine may support better sleep.
+
+Rank 2
+Chunk ID   : SLEEP_003
+Similarity : 0.4375
+Topic      : Sleep 3
+Content:
+# Sleep 3
+
+Limiting screen exposure before bed may help.
+
+Rank 3
+Chunk ID   : STRESS_009
+Similarity : 0.3707
+Topic      : Stress 9
+Content:
+# Stress 9
+
+Sleep habits affect stress management.
+
+Rank 4
+Chunk ID   : SLEEP_007
+Similarity : 0.3618
+Topic      : Sleep 7
+Content:
+# Sleep 7
+
+Avoiding heavy meals before bed may help.
+
+Rank 5
+Chunk ID   : SLEEP_006
+Similarity : 0.3458
+Topic      : Sleep 6
+Content:
+# Sleep 6
+
+Exercise may improve sleep quality.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How does screen time affect sleep?
+EXPECTED TOPIC: SLEEP
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : SLEEP_003
+Similarity : 0.5921
+Topic      : Sleep 3
+Content:
+# Sleep 3
+
+Limiting screen exposure before bed may help.
+
+Rank 2
+Chunk ID   : STRESS_009
+Similarity : 0.5209
+Topic      : Stress 9
+Content:
+# Stress 9
+
+Sleep habits affect stress management.
+
+Rank 3
+Chunk ID   : SLEEP_009
+Similarity : 0.5099
+Topic      : Sleep 9
+Content:
+# Sleep 9
+
+Stress can affect sleep quality.
+
+Rank 4
+Chunk ID   : SLEEP_008
+Similarity : 0.4572
+Topic      : Sleep 8
+Content:
+# Sleep 8
+
+Natural light exposure supports sleep cycles.
+
+Rank 5
+Chunk ID   : SLEEP_002
+Similarity : 0.4341
+Topic      : Sleep 2
+Content:
+# Sleep 2
+
+Reducing caffeine may support better sleep.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How can I sleep better at night?
+EXPECTED TOPIC: SLEEP
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : SLEEP_006
+Similarity : 0.5763
+Topic      : Sleep 6
+Content:
+# Sleep 6
+
+Exercise may improve sleep quality.
+
+Rank 2
+Chunk ID   : SLEEP_004
+Similarity : 0.5758
+Topic      : Sleep 4
+Content:
+# Sleep 4
+
+A calming bedtime routine can improve sleep.
+
+Rank 3
+Chunk ID   : SLEEP_002
+Similarity : 0.5742
+Topic      : Sleep 2
+Content:
+# Sleep 2
+
+Reducing caffeine may support better sleep.
+
+Rank 4
+Chunk ID   : SLEEP_007
+Similarity : 0.5648
+Topic      : Sleep 7
+Content:
+# Sleep 7
+
+Avoiding heavy meals before bed may help.
+
+Rank 5
+Chunk ID   : SLEEP_003
+Similarity : 0.5429
+Topic      : Sleep 3
+Content:
+# Sleep 3
+
+Limiting screen exposure before bed may help.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What is mindfulness?
+EXPECTED TOPIC: MINDFULNESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : MINDFULNESS_010
+Similarity : 0.5355
+Topic      : Mindfulness 10
+Content:
+# Mindfulness 10
+
+Awareness of sensations is part of mindfulness.
+
+Rank 2
+Chunk ID   : MINDFULNESS_001
+Similarity : 0.5257
+Topic      : Mindfulness 1
+Content:
+# Mindfulness 1
+
+Mindfulness focuses attention on the present moment.
+
+Rank 3
+Chunk ID   : MINDFULNESS_005
+Similarity : 0.5139
+Topic      : Mindfulness 5
+Content:
+# Mindfulness 5
+
+Observing thoughts without judgment is important.
+
+Rank 4
+Chunk ID   : MINDFULNESS_002
+Similarity : 0.4476
+Topic      : Mindfulness 2
+Content:
+# Mindfulness 2
+
+Mindful breathing is a common technique.
+
+Rank 5
+Chunk ID   : ANXIETY_008
+Similarity : 0.4449
+Topic      : Anxiety 8
+Content:
+# Anxiety 8
+
+Mindfulness practices may reduce anxiety.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How does mindful breathing work?
+EXPECTED TOPIC: MINDFULNESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : MINDFULNESS_002
+Similarity : 0.7016
+Topic      : Mindfulness 2
+Content:
+# Mindfulness 2
+
+Mindful breathing is a common technique.
+
+Rank 2
+Chunk ID   : ANXIETY_003
+Similarity : 0.5385
+Topic      : Anxiety 3
+Content:
+# Anxiety 3
+
+Deep breathing can reduce anxious feelings.
+
+Rank 3
+Chunk ID   : STRESS_003
+Similarity : 0.5246
+Topic      : Stress 3
+Content:
+# Stress 3
+
+Breathing exercises can help manage stress.
+
+Rank 4
+Chunk ID   : MINDFULNESS_001
+Similarity : 0.4457
+Topic      : Mindfulness 1
+Content:
+# Mindfulness 1
+
+Mindfulness focuses attention on the present moment.
+
+Rank 5
+Chunk ID   : ANXIETY_008
+Similarity : 0.4362
+Topic      : Anxiety 8
+Content:
+# Anxiety 8
+
+Mindfulness practices may reduce anxiety.
+
+
+Relevant in Top5: 2
+Precision@5: 0.400
+
+================================================================================
+QUERY: What is a body scan exercise?
+EXPECTED TOPIC: MINDFULNESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : MINDFULNESS_003
+Similarity : 0.6948
+Topic      : Mindfulness 3
+Content:
+# Mindfulness 3
+
+Body scan exercises promote awareness.
+
+Rank 2
+Chunk ID   : ANXIETY_004
+Similarity : 0.3072
+Topic      : Anxiety 4
+Content:
+# Anxiety 4
+
+Physical activity may help anxiety management.
+
+Rank 3
+Chunk ID   : ANXIETY_002
+Similarity : 0.2828
+Topic      : Anxiety 2
+Content:
+# Anxiety 2
+
+Grounding exercises may help anxiety.
+
+Rank 4
+Chunk ID   : CBT_004
+Similarity : 0.2638
+Topic      : Cbt 4
+Content:
+# Cbt 4
+
+Behavioral activation is a CBT technique.
+
+Rank 5
+Chunk ID   : ANXIETY_009
+Similarity : 0.2623
+Topic      : Anxiety 9
+Content:
+# Anxiety 9
+
+Healthy routines support anxiety management.
+
+
+Relevant in Top5: 1
+Precision@5: 0.200
+
+================================================================================
+QUERY: How can mindfulness improve focus?
+EXPECTED TOPIC: MINDFULNESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : MINDFULNESS_007
+Similarity : 0.7540
+Topic      : Mindfulness 7
+Content:
+# Mindfulness 7
+
+Mindfulness can improve focus.
+
+Rank 2
+Chunk ID   : MINDFULNESS_001
+Similarity : 0.6423
+Topic      : Mindfulness 1
+Content:
+# Mindfulness 1
+
+Mindfulness focuses attention on the present moment.
+
+Rank 3
+Chunk ID   : MINDFULNESS_006
+Similarity : 0.5652
+Topic      : Mindfulness 6
+Content:
+# Mindfulness 6
+
+Short mindfulness breaks can be helpful.
+
+Rank 4
+Chunk ID   : MINDFULNESS_009
+Similarity : 0.5367
+Topic      : Mindfulness 9
+Content:
+# Mindfulness 9
+
+Daily mindfulness practice builds consistency.
+
+Rank 5
+Chunk ID   : MINDFULNESS_002
+Similarity : 0.5294
+Topic      : Mindfulness 2
+Content:
+# Mindfulness 2
+
+Mindful breathing is a common technique.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: How do I stay present in the moment?
+EXPECTED TOPIC: MINDFULNESS
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : MINDFULNESS_001
+Similarity : 0.4544
+Topic      : Mindfulness 1
+Content:
+# Mindfulness 1
+
+Mindfulness focuses attention on the present moment.
+
+Rank 2
+Chunk ID   : MINDFULNESS_002
+Similarity : 0.3906
+Topic      : Mindfulness 2
+Content:
+# Mindfulness 2
+
+Mindful breathing is a common technique.
+
+Rank 3
+Chunk ID   : MINDFULNESS_006
+Similarity : 0.3805
+Topic      : Mindfulness 6
+Content:
+# Mindfulness 6
+
+Short mindfulness breaks can be helpful.
+
+Rank 4
+Chunk ID   : MINDFULNESS_007
+Similarity : 0.3344
+Topic      : Mindfulness 7
+Content:
+# Mindfulness 7
+
+Mindfulness can improve focus.
+
+Rank 5
+Chunk ID   : MINDFULNESS_005
+Similarity : 0.3256
+Topic      : Mindfulness 5
+Content:
+# Mindfulness 5
+
+Observing thoughts without judgment is important.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What is CBT?
+EXPECTED TOPIC: CBT
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : CBT_007
+Similarity : 0.6540
+Topic      : Cbt 7
+Content:
+# Cbt 7
+
+Problem solving is part of CBT.
+
+Rank 2
+Chunk ID   : CBT_003
+Similarity : 0.6251
+Topic      : Cbt 3
+Content:
+# Cbt 3
+
+Cognitive reframing is used in CBT.
+
+Rank 3
+Chunk ID   : CBT_005
+Similarity : 0.5952
+Topic      : Cbt 5
+Content:
+# Cbt 5
+
+Thought records are commonly used in CBT.
+
+Rank 4
+Chunk ID   : CBT_004
+Similarity : 0.5508
+Topic      : Cbt 4
+Content:
+# Cbt 4
+
+Behavioral activation is a CBT technique.
+
+Rank 5
+Chunk ID   : CBT_001
+Similarity : 0.5099
+Topic      : Cbt 1
+Content:
+# Cbt 1
+
+CBT explores links between thoughts and behaviors.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What are thought records?
+EXPECTED TOPIC: CBT
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : CBT_005
+Similarity : 0.6165
+Topic      : Cbt 5
+Content:
+# Cbt 5
+
+Thought records are commonly used in CBT.
+
+Rank 2
+Chunk ID   : MINDFULNESS_005
+Similarity : 0.3504
+Topic      : Mindfulness 5
+Content:
+# Mindfulness 5
+
+Observing thoughts without judgment is important.
+
+Rank 3
+Chunk ID   : CBT_002
+Similarity : 0.3414
+Topic      : Cbt 2
+Content:
+# Cbt 2
+
+Identifying unhelpful thoughts is a CBT skill.
+
+Rank 4
+Chunk ID   : CBT_001
+Similarity : 0.3046
+Topic      : Cbt 1
+Content:
+# Cbt 1
+
+CBT explores links between thoughts and behaviors.
+
+Rank 5
+Chunk ID   : STRESS_010
+Similarity : 0.2840
+Topic      : Stress 10
+Content:
+# Stress 10
+
+Journaling may help process stressful experiences.
+
+
+Relevant in Top5: 3
+Precision@5: 0.600
+
+================================================================================
+QUERY: How does cognitive reframing work?
+EXPECTED TOPIC: CBT
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : CBT_003
+Similarity : 0.6939
+Topic      : Cbt 3
+Content:
+# Cbt 3
+
+Cognitive reframing is used in CBT.
+
+Rank 2
+Chunk ID   : CBT_008
+Similarity : 0.4166
+Topic      : Cbt 8
+Content:
+# Cbt 8
+
+Reflection helps develop self-awareness.
+
+Rank 3
+Chunk ID   : CBT_002
+Similarity : 0.3903
+Topic      : Cbt 2
+Content:
+# Cbt 2
+
+Identifying unhelpful thoughts is a CBT skill.
+
+Rank 4
+Chunk ID   : CBT_004
+Similarity : 0.3616
+Topic      : Cbt 4
+Content:
+# Cbt 4
+
+Behavioral activation is a CBT technique.
+
+Rank 5
+Chunk ID   : CBT_001
+Similarity : 0.3517
+Topic      : Cbt 1
+Content:
+# Cbt 1
+
+CBT explores links between thoughts and behaviors.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What is behavioral activation?
+EXPECTED TOPIC: CBT
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : CBT_004
+Similarity : 0.6551
+Topic      : Cbt 4
+Content:
+# Cbt 4
+
+Behavioral activation is a CBT technique.
+
+Rank 2
+Chunk ID   : CBT_009
+Similarity : 0.4037
+Topic      : Cbt 9
+Content:
+# Cbt 9
+
+Small behavioral changes can create progress.
+
+Rank 3
+Chunk ID   : MINDFULNESS_008
+Similarity : 0.3830
+Topic      : Mindfulness 8
+Content:
+# Mindfulness 8
+
+Mindfulness supports emotional regulation.
+
+Rank 4
+Chunk ID   : ANXIETY_010
+Similarity : 0.3662
+Topic      : Anxiety 10
+Content:
+# Anxiety 10
+
+Recognizing anxiety triggers can be useful.
+
+Rank 5
+Chunk ID   : CBT_001
+Similarity : 0.3583
+Topic      : Cbt 1
+Content:
+# Cbt 1
+
+CBT explores links between thoughts and behaviors.
+
+
+Relevant in Top5: 3
+Precision@5: 0.600
+
+================================================================================
+QUERY: How can CBT change thinking patterns?
+EXPECTED TOPIC: CBT
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : CBT_001
+Similarity : 0.6810
+Topic      : Cbt 1
+Content:
+# Cbt 1
+
+CBT explores links between thoughts and behaviors.
+
+Rank 2
+Chunk ID   : CBT_003
+Similarity : 0.6808
+Topic      : Cbt 3
+Content:
+# Cbt 3
+
+Cognitive reframing is used in CBT.
+
+Rank 3
+Chunk ID   : CBT_002
+Similarity : 0.6556
+Topic      : Cbt 2
+Content:
+# Cbt 2
+
+Identifying unhelpful thoughts is a CBT skill.
+
+Rank 4
+Chunk ID   : CBT_009
+Similarity : 0.6527
+Topic      : Cbt 9
+Content:
+# Cbt 9
+
+Small behavioral changes can create progress.
+
+Rank 5
+Chunk ID   : CBT_004
+Similarity : 0.5989
+Topic      : Cbt 4
+Content:
+# Cbt 4
+
+Behavioral activation is a CBT technique.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: What are symptoms of depression?
+EXPECTED TOPIC: DEPRESSION
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : DEPRESSION_006
+Similarity : 0.4889
+Topic      : Depression 6
+Content:
+# Depression 6
+
+Professional guidance may be helpful.
+
+Rank 2
+Chunk ID   : DEPRESSION_009
+Similarity : 0.4846
+Topic      : Depression 9
+Content:
+# Depression 9
+
+Persistent symptoms should not be ignored.
+
+Rank 3
+Chunk ID   : DEPRESSION_005
+Similarity : 0.4788
+Topic      : Depression 5
+Content:
+# Depression 5
+
+Seeking support is important.
+
+Rank 4
+Chunk ID   : DEPRESSION_008
+Similarity : 0.4363
+Topic      : Depression 8
+Content:
+# Depression 8
+
+Emotional difficulties can affect anyone.
+
+Rank 5
+Chunk ID   : DEPRESSION_003
+Similarity : 0.3930
+Topic      : Depression 3
+Content:
+# Depression 3
+
+Daily routines can be beneficial.
+
+
+Relevant in Top5: 5
+Precision@5: 1.000
+
+================================================================================
+QUERY: Why is social support important?
+EXPECTED TOPIC: DEPRESSION
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : DEPRESSION_002
+Similarity : 0.5848
+Topic      : Depression 2
+Content:
+# Depression 2
+
+Social connection may support wellbeing.
+
+Rank 2
+Chunk ID   : DEPRESSION_005
+Similarity : 0.4786
+Topic      : Depression 5
+Content:
+# Depression 5
+
+Seeking support is important.
+
+Rank 3
+Chunk ID   : STRESS_006
+Similarity : 0.4671
+Topic      : Stress 6
+Content:
+# Stress 6
+
+Supportive relationships can buffer stress.
+
+Rank 4
+Chunk ID   : DEPRESSION_010
+Similarity : 0.4476
+Topic      : Depression 10
+Content:
+# Depression 10
+
+Awareness promotes early support seeking.
+
+Rank 5
+Chunk ID   : DEPRESSION_007
+Similarity : 0.3450
+Topic      : Depression 7
+Content:
+# Depression 7
+
+Self-care practices support wellbeing.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How can routines help depression?
+EXPECTED TOPIC: DEPRESSION
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : DEPRESSION_003
+Similarity : 0.7779
+Topic      : Depression 3
+Content:
+# Depression 3
+
+Daily routines can be beneficial.
+
+Rank 2
+Chunk ID   : DEPRESSION_004
+Similarity : 0.6544
+Topic      : Depression 4
+Content:
+# Depression 4
+
+Meaningful activities may help maintain engagement.
+
+Rank 3
+Chunk ID   : DEPRESSION_006
+Similarity : 0.6146
+Topic      : Depression 6
+Content:
+# Depression 6
+
+Professional guidance may be helpful.
+
+Rank 4
+Chunk ID   : DEPRESSION_007
+Similarity : 0.6021
+Topic      : Depression 7
+Content:
+# Depression 7
+
+Self-care practices support wellbeing.
+
+Rank 5
+Chunk ID   : ANXIETY_009
+Similarity : 0.5795
+Topic      : Anxiety 9
+Content:
+# Anxiety 9
+
+Healthy routines support anxiety management.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: Why should I seek professional help?
+EXPECTED TOPIC: DEPRESSION
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : DEPRESSION_005
+Similarity : 0.4760
+Topic      : Depression 5
+Content:
+# Depression 5
+
+Seeking support is important.
+
+Rank 2
+Chunk ID   : DEPRESSION_006
+Similarity : 0.4696
+Topic      : Depression 6
+Content:
+# Depression 6
+
+Professional guidance may be helpful.
+
+Rank 3
+Chunk ID   : ANXIETY_007
+Similarity : 0.3963
+Topic      : Anxiety 7
+Content:
+# Anxiety 7
+
+Talking with trusted people can provide support.
+
+Rank 4
+Chunk ID   : DEPRESSION_007
+Similarity : 0.3918
+Topic      : Depression 7
+Content:
+# Depression 7
+
+Self-care practices support wellbeing.
+
+Rank 5
+Chunk ID   : DEPRESSION_002
+Similarity : 0.3779
+Topic      : Depression 2
+Content:
+# Depression 2
+
+Social connection may support wellbeing.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+QUERY: How can meaningful activities help wellbeing?
+EXPECTED TOPIC: DEPRESSION
+
+TOP 5 RESULTS
+
+Rank 1
+Chunk ID   : DEPRESSION_004
+Similarity : 0.6999
+Topic      : Depression 4
+Content:
+# Depression 4
+
+Meaningful activities may help maintain engagement.
+
+Rank 2
+Chunk ID   : DEPRESSION_003
+Similarity : 0.5771
+Topic      : Depression 3
+Content:
+# Depression 3
+
+Daily routines can be beneficial.
+
+Rank 3
+Chunk ID   : DEPRESSION_007
+Similarity : 0.5444
+Topic      : Depression 7
+Content:
+# Depression 7
+
+Self-care practices support wellbeing.
+
+Rank 4
+Chunk ID   : DEPRESSION_002
+Similarity : 0.5366
+Topic      : Depression 2
+Content:
+# Depression 2
+
+Social connection may support wellbeing.
+
+Rank 5
+Chunk ID   : STRESS_007
+Similarity : 0.5094
+Topic      : Stress 7
+Content:
+# Stress 7
+
+Relaxation techniques may improve wellbeing.
+
+
+Relevant in Top5: 4
+Precision@5: 0.800
+
+================================================================================
+FINAL RESULTS
+
+Precision@5: 0.793
+Top1 Accuracy: 1.000
+Top3 Accuracy: 1.000
+Failures: 0

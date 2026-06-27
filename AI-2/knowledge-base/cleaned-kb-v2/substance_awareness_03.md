@@ -1,0 +1,13 @@
+# Substance Awareness: Harm Reduction Basics
+
+## Overview
+Harm reduction focuses on lowering risk and improving safety for people who use substances. It does not depend on blame or all-or-nothing thinking. Instead, it recognizes that safer choices can reduce harm even when someone is not ready or able to stop completely. This approach is widely used in public health because it can save lives and support longer-term change.
+
+## Key Concepts / Symptoms
+Harm reduction includes understanding dose, avoiding dangerous combinations, and recognizing overdose risk. It also includes knowing how substances affect judgment, breathing, and reaction time. People may be at greater risk when they are alone, sleep deprived, or using after a period of abstinence. Clear information helps people make safer decisions.
+
+## Coping Strategies
+Safer choices can include avoiding mixing substances, using less when possible, and knowing what to do in an emergency. People can also reduce harm by using substances in safer settings and by keeping trusted support nearby when appropriate. Education and nonjudgmental conversation are central to this approach.
+
+## When to Seek Support
+If a person has repeated problems controlling use or has had an overdose or near-overdose, more support is needed. A healthcare professional, counselor, or recovery service can help with next steps.
