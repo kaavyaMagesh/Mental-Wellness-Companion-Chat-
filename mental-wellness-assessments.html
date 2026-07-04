@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mental Wellness Assessments | InnerWhispers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            sans: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cream: '#f5f2eb',
+            'cream-dark': '#ede9df',
+            'cream-border': '#d8d3c8',
+            'warm-gray': '#8c8680',
+            'warm-dark': '#2a2520',
+            orange: '#e8651a',
+            'orange-light': '#f0894d',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { background-color: #f5f2eb; color: #2a2520; font-family: 'DM Sans', sans-serif; }
+
+    .hero-landscape {
+      background: linear-gradient(180deg, #7a6f5a 0%, #9a8f72 10%, #b5a882 20%, #c8b88a 30%, #8a7d5f 45%, #5a5040 55%, #4a4235 65%, #6b5e47 75%, #8a7a62 85%, #a0916e 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero-landscape::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 30% at 30% 60%, rgba(180,160,100,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 70% 40%, rgba(100,90,70,0.4) 0%, transparent 60%),
+        linear-gradient(to bottom, rgba(120,110,85,0.2) 0%, rgba(60,50,35,0.5) 100%);
+    }
+    .cta-landscape {
+      background: linear-gradient(180deg, #6a8fa0 0%, #7a9fae 10%, #c8b878 20%, #d4c880 30%, #b8a860 40%, #a09050 50%, #8a7840 60%, #7a6830 70%, #6a5820 80%, #8a7840 90%, #a09050 100%);
+      position: relative; overflow: hidden;
+    }
+    .cta-landscape::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 30% at 50% 10%, rgba(106,143,160,0.7) 0%, transparent 50%),
+        linear-gradient(to bottom, rgba(106,143,160,0.2) 0%, rgba(100,85,30,0.4) 60%, rgba(80,65,20,0.5) 100%);
+    }
+    .grain::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+      opacity: 0.4; pointer-events: none;
+    }
+    .code-editor { background: rgba(15, 12, 8, 0.92); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(2px); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f5f2eb; }
+    ::-webkit-scrollbar-thumb { background: #c8b878; border-radius: 3px; }
+    .nav-link { transition: opacity 0.15s; }
+    .nav-link:hover { opacity: 0.6; }
+    .btn-primary { background: #e8651a; color: white; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.03em; padding: 8px 16px; border-radius: 3px; transition: background 0.15s; display: inline-block; cursor: pointer; }
+    .btn-primary:hover { background: #d45a14; }
+    .btn-outline { border: 1px solid #2a2520; color: #2a2520; font-size: 0.75rem; font-weight: 400; padding: 7px 14px; border-radius: 3px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.15s; cursor: pointer; }
+    .btn-outline:hover { background: rgba(0,0,0,0.05); }
+    .divider { border-color: #d8d3c8; }
+    .feature-card { border: 1px solid #d8d3c8; background: rgba(255,255,255,0.4); border-radius: 4px; transition: border-color 0.15s, background 0.15s; }
+    .feature-card:hover { border-color: #e8651a; background: rgba(255,255,255,0.6); }
+    .testimonial-card { border: 1px solid #d8d3c8; background: rgba(255,255,255,0.5); border-radius: 4px; }
+    .faq-item { border-bottom: 1px solid #d8d3c8; }
+    .step-card { border: 1px solid #d8d3c8; background: rgba(255,255,255,0.4); border-radius: 4px; }
+    .assessment-table th { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: #8c8680; font-weight: 500; text-align: left; padding: 10px 14px; border-bottom: 1px solid #d8d3c8; }
+    .assessment-table td { font-size: 11px; padding: 12px 14px; border-bottom: 1px solid #d8d3c8; color: #2a2520; }
+    .assessment-table tr:last-child td { border-bottom: none; }
+    .assessment-table tbody tr { transition: background 0.12s; }
+    .assessment-table tbody tr:hover { background: rgba(232,101,26,0.04); }
+    .duration-tag { display: inline-block; font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #8c8680; border: 1px solid #d8d3c8; padding: 2px 6px; border-radius: 3px; }
+    .reveal { opacity: 0; transition: opacity 0.6s ease-out; }
+    .reveal.visible { opacity: 1; }
+
+    /* ── Interactive additions (no design change) ── */
+    .filter-btn { font-size: 10px; font-family: 'JetBrains Mono', monospace; border: 1px solid #d8d3c8; padding: 4px 10px; border-radius: 3px; cursor: pointer; transition: all 0.15s; color: #8c8680; background: transparent; }
+    .filter-btn:hover, .filter-btn.active { border-color: #e8651a; color: #e8651a; background: rgba(232,101,26,0.05); }
+    .search-input { font-size: 11px; border: 1px solid #d8d3c8; border-radius: 3px; padding: 7px 10px; background: rgba(255,255,255,0.5); color: #2a2520; outline: none; width: 100%; transition: border-color 0.15s; }
+    .search-input:focus { border-color: #e8651a; }
+    .search-input::placeholder { color: #b0aba5; }
+    .stat-num { font-family: 'Instrument Serif', serif; font-size: 2.25rem; color: #2a2520; line-height: 1; }
+    .chart-wrap { position: relative; }
+    .tab-btn { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 5px 12px; border-radius: 3px; cursor: pointer; color: #8c8680; border: 1px solid transparent; transition: all 0.15s; }
+    .tab-btn.active { border-color: #d8d3c8; background: rgba(255,255,255,0.6); color: #2a2520; }
+    .tab-btn:hover:not(.active) { color: #2a2520; }
+    .coverage-bar { height: 6px; border-radius: 3px; background: #d8d3c8; overflow: hidden; }
+    .coverage-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+    .badge { display: inline-block; font-size: 9px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border-radius: 3px; }
+    .badge-excellent { background: rgba(34,197,94,0.12); color: #16a34a; border: 1px solid rgba(34,197,94,0.25); }
+    .badge-strong { background: rgba(59,130,246,0.10); color: #2563eb; border: 1px solid rgba(59,130,246,0.2); }
+    .badge-moderate { background: rgba(232,101,26,0.10); color: #e8651a; border: 1px solid rgba(232,101,26,0.2); }
+    .badge-limited { background: rgba(140,134,128,0.10); color: #8c8680; border: 1px solid rgba(140,134,128,0.2); }
+    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.6; transform:scale(1.3); } }
+    .score-ring { transform: rotate(-90deg); }
+    .tooltip-trigger { position: relative; cursor: help; }
+    .tooltip-trigger:hover .tooltip-box { opacity: 1; pointer-events: auto; }
+    .tooltip-box { opacity: 0; pointer-events: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #2a2520; color: #f5f2eb; font-size: 9px; padding: 5px 8px; border-radius: 3px; white-space: nowrap; transition: opacity 0.15s; z-index: 20; }
+    .row-hidden { display: none; }
+    .sim-item { transition: all 0.2s; }
+    .sim-item:hover { background: rgba(232,101,26,0.04); }
+    @media (max-width: 640px) { .btn-primary, .btn-outline { font-size: 0.7rem; padding: 6px 12px; } .assessment-table { font-size: 10px; } }
+  </style>
+</head>
+<body class="bg-cream">
+
+  <!-- ═══════════════════════ NAVBAR -->
+  <nav class="border-b border-cream-border sticky top-0 bg-cream/95 backdrop-blur-sm z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect width="7" height="7" fill="#2a2520"/>
+            <rect x="9" width="7" height="7" fill="#2a2520"/>
+            <rect x="9" y="9" width="7" height="7" fill="#2a2520"/>
+          </svg>
+          <span class="font-medium text-warm-dark text-xs tracking-tight">InnerWhispers</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8 text-[11px] text-warm-gray">
+          <a href="#" class="nav-link">AI Companion</a>
+          <a href="#" class="nav-link">How It Works</a>
+          <a href="#available-assessments" class="nav-link">Assessments</a>
+          <a href="#" class="nav-link">About us</a>
+        </div>
+        <a href="#available-assessments" class="btn-primary">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ HERO -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-12 reveal">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-12">
+      <div>
+        <h1 class="font-serif text-5xl sm:text-6xl text-warm-dark leading-tight mb-6">Mental Wellness Assessments</h1>
+        <p class="text-xs text-warm-gray leading-relaxed max-w-sm mb-4 font-medium text-warm-dark">Evidence-Based Self-Assessments for Better Self-Awareness</p>
+        <p class="text-xs text-warm-gray leading-relaxed max-w-sm mb-6">Explore a collection of trusted mental health and wellness screening tools designed to help you better understand your emotional well-being, stress levels, mood patterns, and lifestyle habits.</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed max-w-sm mb-6">These assessments are widely used for self-reflection, early awareness, and wellness monitoring. Results are provided for informational purposes and should not be considered a clinical diagnosis.</p>
+        <div class="flex items-center gap-3 flex-wrap">
+          <a href="#available-assessments" class="btn-primary">Start an Assessment</a>
+          <a href="#how-it-works" class="btn-outline">How It Works <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5h6M5 2l3 3-3 3"/></svg></a>
+        </div>
+
+        <!-- Animated stat counters -->
+        <div class="flex items-center gap-4 mt-8 pt-8 border-t border-cream-border flex-wrap">
+          <div class="flex items-center gap-2">
+            <svg width="12" height="12" fill="#e8651a"><circle cx="6" cy="6" r="6"/></svg>
+            <span class="text-[10px] text-warm-gray"><span class="counter font-medium text-warm-dark" data-target="9">0</span> Validated Tools</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg width="12" height="12" fill="#e8651a"><circle cx="6" cy="6" r="6"/></svg>
+            <span class="text-[10px] text-warm-gray"><span class="counter font-medium text-warm-dark" data-target="5">0</span> Minutes Each</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg width="12" height="12" fill="#e8651a"><circle cx="6" cy="6" r="6"/></svg>
+            <span class="text-[10px] text-warm-gray font-medium text-warm-dark">Instant Results</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: live demo card -->
+      <div class="relative h-64 rounded-sm overflow-hidden">
+        <div class="hero-landscape grain absolute inset-0"></div>
+        <div class="code-editor absolute inset-0 m-4 sm:m-6 rounded-sm flex flex-col p-3">
+          <div class="flex gap-1.5 mb-3">
+            <div class="w-2 h-2 rounded-full bg-warm-gray/30"></div>
+            <div class="w-2 h-2 rounded-full bg-warm-gray/30"></div>
+            <div class="w-2 h-2 rounded-full bg-warm-gray/30"></div>
+          </div>
+          <div class="font-mono text-[8px] leading-relaxed text-green-400 space-y-1 flex-1 overflow-hidden" id="demo-terminal">
+            <div><span class="text-blue-400">Assessment</span>: PHQ-9</div>
+            <div><span class="text-blue-400">Status</span>: <span id="demo-status" class="text-yellow-300">Running…</span></div>
+            <div>&nbsp;</div>
+            <div id="demo-score-line" class="opacity-0"><span class="text-blue-400">Score</span></div>
+            <div id="demo-score-val" class="ml-4 opacity-0">7 / 27 — Mild range</div>
+            <div>&nbsp;</div>
+            <div id="demo-insight-line" class="opacity-0"><span class="text-blue-400">Insight</span></div>
+            <div id="demo-insight-val" class="ml-4 opacity-0">Recommended: monitor mood weekly.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ AVAILABLE ASSESSMENTS -->
+  <section id="available-assessments" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-cream-border reveal">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-4">
+      <div>
+        <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight mb-2">Available Assessments</h2>
+        <p class="text-[11px] text-warm-gray leading-relaxed max-w-lg">A curated set of widely recognized screening tools — filter by category or search by name.</p>
+      </div>
+      <input type="text" id="card-search" placeholder="Search assessments…" class="search-input" style="max-width:200px" oninput="filterCards()" />
+    </div>
+
+    <!-- Filter pills -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      <button class="filter-btn active" data-cat="all" onclick="setCatFilter(this,'all')">All</button>
+      <button class="filter-btn" data-cat="stress" onclick="setCatFilter(this,'stress')">Stress & Burnout</button>
+      <button class="filter-btn" data-cat="mood" onclick="setCatFilter(this,'mood')">Mood</button>
+      <button class="filter-btn" data-cat="anxiety" onclick="setCatFilter(this,'anxiety')">Anxiety</button>
+      <button class="filter-btn" data-cat="lifestyle" onclick="setCatFilter(this,'lifestyle')">Lifestyle</button>
+      <button class="filter-btn" data-cat="identity" onclick="setCatFilter(this,'identity')">Identity</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cards-grid">
+
+      <div class="feature-card p-6 assessment-card" data-cat="stress" data-name="perceived stress scale pss">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">3 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Perceived Stress Scale (PSS)</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">Measure how stressful situations in your life feel and understand your current stress levels.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-moderate">Stress</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="mood" data-name="patient health questionnaire phq-9 depression">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">2 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Patient Health Questionnaire (PHQ-9)</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">A commonly used screening tool that helps identify symptoms associated with depression.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-strong">Mood</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="anxiety" data-name="generalized anxiety disorder gad-7 anxiety">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">2 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Generalized Anxiety Disorder Assessment (GAD-7)</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">Assess symptoms related to anxiety and gain insight into your emotional well-being.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-excellent">Anxiety</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="lifestyle" data-name="alcohol use disorders identification test audit">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">3 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Alcohol Use Disorders Identification Test (AUDIT)</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">Evaluate alcohol consumption patterns and understand potential risks associated with alcohol use.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-limited">Lifestyle</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="mood" data-name="who-5 well-being index wellbeing">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">1 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">WHO-5 Well-Being Index</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">A short assessment designed to measure overall psychological well-being and life satisfaction.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-strong">Mood</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="lifestyle" data-name="pittsburgh sleep quality index psqi sleep">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">5 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Pittsburgh Sleep Quality Index (PSQI)</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">Understand your sleep quality and identify areas that may affect your overall wellness.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-limited">Lifestyle</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="stress" data-name="burnout assessment exhaustion">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">4 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Burnout Assessment</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">Evaluate emotional exhaustion, motivation, and work-related stress indicators.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-moderate">Stress</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="identity" data-name="self-esteem assessment confidence self-worth">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">3 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Self-Esteem Assessment</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">Explore self-confidence, self-worth, and personal perception.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-limited">Identity</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+      <div class="feature-card p-6 assessment-card" data-cat="mood" data-name="emotional wellness check-in emotional state">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-8 h-8 rounded-full bg-warm-gray/10 flex items-center justify-center text-warm-gray text-sm font-serif">◐</div>
+          <span class="duration-tag">2 min</span>
+        </div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Emotional Wellness Check-In</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed mb-4">A quick self-reflection tool to understand your current emotional state.</p>
+        <div class="flex items-center justify-between">
+          <span class="badge badge-strong">Mood</span>
+          <button class="btn-primary" style="font-size:9px;padding:4px 10px">Start →</button>
+        </div>
+      </div>
+
+    </div>
+    <p class="text-[10px] text-warm-gray mt-4" id="cards-empty" style="display:none">No assessments match your search.</p>
+  </section>
+
+
+  <!-- ═══════════════════════ ASSESSMENT OVERVIEW TABLE -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 reveal">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+      <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight">Assessment Overview</h2>
+      <div class="flex gap-2 flex-wrap">
+        <button class="tab-btn active" onclick="sortTable('name',this)">Name ↕</button>
+        <button class="tab-btn" onclick="sortTable('duration',this)">Duration ↕</button>
+        <button class="tab-btn" onclick="sortTable('category',this)">Category ↕</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-sm border border-cream-border bg-white/40">
+      <table class="assessment-table w-full" id="main-table">
+        <thead>
+          <tr>
+            <th>Assessment</th>
+            <th>Category</th>
+            <th>Questions</th>
+            <th>Duration</th>
+            <th>Popularity</th>
+          </tr>
+        </thead>
+        <tbody id="main-tbody">
+          <tr data-name="PSS" data-category="Stress" data-dur="3">
+            <td class="font-medium">PSS</td>
+            <td class="text-warm-gray">Stress</td>
+            <td class="text-warm-gray font-mono text-[10px]">10</td>
+            <td><span class="duration-tag">3 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:78%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="PHQ-9" data-category="Depression" data-dur="2">
+            <td class="font-medium">PHQ-9</td>
+            <td class="text-warm-gray">Depression Screening</td>
+            <td class="text-warm-gray font-mono text-[10px]">9</td>
+            <td><span class="duration-tag">2 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:95%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="GAD-7" data-category="Anxiety" data-dur="2">
+            <td class="font-medium">GAD-7</td>
+            <td class="text-warm-gray">Anxiety Screening</td>
+            <td class="text-warm-gray font-mono text-[10px]">7</td>
+            <td><span class="duration-tag">2 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:91%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="AUDIT" data-category="Lifestyle" data-dur="3">
+            <td class="font-medium">AUDIT</td>
+            <td class="text-warm-gray">Alcohol Use</td>
+            <td class="text-warm-gray font-mono text-[10px]">10</td>
+            <td><span class="duration-tag">3 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:52%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="WHO-5" data-category="Well-Being" data-dur="1">
+            <td class="font-medium">WHO-5</td>
+            <td class="text-warm-gray">Well-Being</td>
+            <td class="text-warm-gray font-mono text-[10px]">5</td>
+            <td><span class="duration-tag">1 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:70%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="PSQI" data-category="Lifestyle" data-dur="5">
+            <td class="font-medium">PSQI</td>
+            <td class="text-warm-gray">Sleep Quality</td>
+            <td class="text-warm-gray font-mono text-[10px]">19</td>
+            <td><span class="duration-tag">5 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:63%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="Burnout" data-category="Stress" data-dur="4">
+            <td class="font-medium">Burnout Assessment</td>
+            <td class="text-warm-gray">Burnout</td>
+            <td class="text-warm-gray font-mono text-[10px]">16</td>
+            <td><span class="duration-tag">4 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:74%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="Self-Esteem" data-category="Identity" data-dur="3">
+            <td class="font-medium">Self-Esteem Assessment</td>
+            <td class="text-warm-gray">Identity</td>
+            <td class="text-warm-gray font-mono text-[10px]">10</td>
+            <td><span class="duration-tag">3 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:45%;background:#e8651a;"></div></div></td>
+          </tr>
+          <tr data-name="Emotional Check-In" data-category="Mood" data-dur="2">
+            <td class="font-medium">Emotional Check-In</td>
+            <td class="text-warm-gray">Mood</td>
+            <td class="text-warm-gray font-mono text-[10px]">8</td>
+            <td><span class="duration-tag">2 min</span></td>
+            <td><div class="coverage-bar w-24"><div class="coverage-fill" style="width:59%;background:#e8651a;"></div></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ HOW IT WORKS -->
+  <section id="how-it-works" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-cream-border reveal">
+    <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight mb-12">How Assessments Work</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="step-card p-6">
+        <div class="font-mono text-[10px] text-orange mb-3">STEP 1</div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Choose</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed">Choose an assessment relevant to your needs.</p>
+      </div>
+      <div class="step-card p-6">
+        <div class="font-mono text-[10px] text-orange mb-3">STEP 2</div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Answer</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed">Answer a series of validated questions.</p>
+      </div>
+      <div class="step-card p-6">
+        <div class="font-mono text-[10px] text-orange mb-3">STEP 3</div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Score</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed">Receive an instant score and explanation.</p>
+      </div>
+      <div class="step-card p-6">
+        <div class="font-mono text-[10px] text-orange mb-3">STEP 4</div>
+        <p class="text-xs font-medium text-warm-dark mb-2">Insights</p>
+        <p class="text-[10px] text-warm-gray leading-relaxed">Get personalized wellness insights and recommended resources from your AI Wellness Companion.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ ASSESSMENT CATEGORIES (interactive) -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-cream-border reveal">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+      <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight">Assessment Categories</h2>
+      <div class="flex gap-2">
+        <button class="tab-btn active" id="cat-grid-btn" onclick="switchCatView('grid')">Grid</button>
+        <button class="tab-btn" id="cat-chart-btn" onclick="switchCatView('chart')">Chart</button>
+      </div>
+    </div>
+
+    <!-- Grid view -->
+    <div id="cat-grid-view" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="testimonial-card p-6">
+        <p class="text-xs font-medium text-warm-dark mb-3">Stress &amp; Burnout</p>
+        <ul class="text-[10px] text-warm-gray leading-relaxed space-y-1">
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Perceived Stress Scale (PSS)</li>
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Burnout Assessment</li>
+        </ul>
+        <div class="mt-4 coverage-bar"><div class="coverage-fill" style="width:78%;background:#e8651a;"></div></div>
+        <p class="text-[9px] text-warm-gray mt-1 font-mono">2 tools · high demand</p>
+      </div>
+      <div class="testimonial-card p-6">
+        <p class="text-xs font-medium text-warm-dark mb-3">Mood &amp; Emotional Well-Being</p>
+        <ul class="text-[10px] text-warm-gray leading-relaxed space-y-1">
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Patient Health Questionnaire (PHQ-9)</li>
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> WHO-5 Well-Being Index</li>
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Emotional Wellness Check-In</li>
+        </ul>
+        <div class="mt-4 coverage-bar"><div class="coverage-fill" style="width:91%;background:#2563eb;"></div></div>
+        <p class="text-[9px] text-warm-gray mt-1 font-mono">3 tools · most accessed</p>
+      </div>
+      <div class="testimonial-card p-6">
+        <p class="text-xs font-medium text-warm-dark mb-3">Anxiety &amp; Resilience</p>
+        <ul class="text-[10px] text-warm-gray leading-relaxed space-y-1">
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Generalized Anxiety Disorder Assessment (GAD-7)</li>
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Resilience Assessments</li>
+        </ul>
+        <div class="mt-4 coverage-bar"><div class="coverage-fill" style="width:85%;background:#16a34a;"></div></div>
+        <p class="text-[9px] text-warm-gray mt-1 font-mono">2 tools · high engagement</p>
+      </div>
+      <div class="testimonial-card p-6">
+        <p class="text-xs font-medium text-warm-dark mb-3">Lifestyle &amp; Habits</p>
+        <ul class="text-[10px] text-warm-gray leading-relaxed space-y-1">
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Alcohol Use Disorders Identification Test (AUDIT)</li>
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Pittsburgh Sleep Quality Index (PSQI)</li>
+          <li class="flex items-center gap-2"><span class="text-orange">▪</span> Self-Care Assessment</li>
+        </ul>
+        <div class="mt-4 coverage-bar"><div class="coverage-fill" style="width:55%;background:#8c8680;"></div></div>
+        <p class="text-[9px] text-warm-gray mt-1 font-mono">3 tools · growing demand</p>
+      </div>
+    </div>
+
+    <!-- Chart view -->
+    <div id="cat-chart-view" style="display:none">
+      <div class="border border-cream-border bg-white/40 rounded-sm p-6" style="max-height:340px;">
+        <canvas id="catChart" height="280"></canvas>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ UNDERSTANDING YOUR RESULTS (interactive gauge) -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 reveal">
+    <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight mb-8">Understanding Your Results</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div>
+        <p class="text-[11px] text-warm-gray leading-relaxed mb-6">Assessment results can help you:</p>
+        <div class="space-y-4">
+          <div class="flex gap-3"><div class="text-orange font-serif text-lg flex-shrink-0">▪</div><p class="text-xs text-warm-dark leading-relaxed">Recognize emotional patterns</p></div>
+          <div class="flex gap-3"><div class="text-orange font-serif text-lg flex-shrink-0">▪</div><p class="text-xs text-warm-dark leading-relaxed">Understand areas of concern</p></div>
+          <div class="flex gap-3"><div class="text-orange font-serif text-lg flex-shrink-0">▪</div><p class="text-xs text-warm-dark leading-relaxed">Track changes over time</p></div>
+          <div class="flex gap-3"><div class="text-orange font-serif text-lg flex-shrink-0">▪</div><p class="text-xs text-warm-dark leading-relaxed">Support conversations with professionals</p></div>
+          <div class="flex gap-3"><div class="text-orange font-serif text-lg flex-shrink-0">▪</div><p class="text-xs text-warm-dark leading-relaxed">Build healthier wellness habits</p></div>
+        </div>
+        <p class="text-[10px] text-warm-gray leading-relaxed mt-6">Your results are explained in clear, supportive language to encourage self-awareness and growth.</p>
+      </div>
+
+      <!-- Interactive score explorer -->
+      <div class="border border-cream-border bg-white/40 rounded-sm p-6">
+        <p class="text-[10px] font-mono text-warm-gray mb-4 uppercase tracking-widest">Score Range Explorer</p>
+
+        <div class="flex flex-col items-center mb-4">
+          <svg width="160" height="90" viewBox="0 0 160 90" class="overflow-visible">
+            <!-- arc track -->
+            <path d="M 15 85 A 65 65 0 0 1 145 85" fill="none" stroke="#d8d3c8" stroke-width="10" stroke-linecap="round"/>
+            <!-- arc fill -->
+            <path id="gauge-arc" d="M 15 85 A 65 65 0 0 1 145 85" fill="none" stroke="#e8651a" stroke-width="10" stroke-linecap="round" stroke-dasharray="204" stroke-dashoffset="102"/>
+            <text id="gauge-label" x="80" y="78" text-anchor="middle" font-size="22" fill="#2a2520" font-family="Instrument Serif">5</text>
+            <text x="80" y="92" text-anchor="middle" font-size="8" fill="#8c8680" font-family="DM Sans">/ 27</text>
+          </svg>
+        </div>
+
+        <input type="range" id="score-slider" min="0" max="27" value="5" class="w-full mb-3" style="accent-color:#e8651a;" oninput="updateGauge(this.value)"/>
+
+        <div id="score-zone" class="text-center p-3 rounded-sm border border-cream-border bg-cream/60">
+          <p id="zone-label" class="text-xs font-medium text-warm-dark">Minimal</p>
+          <p id="zone-desc" class="text-[10px] text-warm-gray mt-1">Little to no symptoms present. Continue self-care practices.</p>
+        </div>
+
+        <p class="text-[9px] text-warm-gray mt-2 font-mono text-center">Drag to explore PHQ-9 score ranges</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ DISCLAIMER -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-cream-border reveal">
+    <div class="flex flex-col sm:flex-row gap-12">
+      <div class="sm:w-5/12">
+        <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight">Important<br/><em>Disclaimer</em></h2>
+      </div>
+      <div class="sm:w-7/12">
+        <p class="text-[11px] text-warm-gray leading-relaxed mb-4">These assessments are intended for educational, wellness, and self-reflection purposes only. They do not provide medical diagnoses and should not replace professional mental health care, diagnosis, or treatment.</p>
+        <p class="text-[11px] text-warm-gray leading-relaxed">If you are experiencing severe emotional distress, thoughts of self-harm, or a mental health emergency, seek immediate support from a qualified mental health professional or local emergency services.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ FAQ -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-cream-border reveal">
+    <div class="flex flex-col sm:flex-row gap-12">
+      <div class="sm:w-5/12">
+        <h2 class="font-serif text-3xl sm:text-4xl text-warm-dark leading-tight">Frequently<br/>asked<br/><em>questions</em></h2>
+      </div>
+      <div class="sm:w-7/12">
+        <div id="faq-list">
+          <div class="faq-item py-4 cursor-pointer" onclick="toggleFaq(this)">
+            <div class="flex items-center justify-between"><span class="text-xs font-medium text-warm-dark">Are these assessments clinically validated?</span><span class="text-warm-gray text-lg leading-none faq-icon transition-transform">+</span></div>
+            <div class="faq-answer hidden mt-3"><p class="text-[11px] text-warm-gray leading-relaxed">Yes. Tools such as PHQ-9, GAD-7, PSS, AUDIT, WHO-5, and PSQI are widely used, evidence-based screening instruments. However, results are for self-reflection and informational purposes only, not a clinical diagnosis.</p></div>
+          </div>
+          <div class="faq-item py-4 cursor-pointer" onclick="toggleFaq(this)">
+            <div class="flex items-center justify-between"><span class="text-xs font-medium text-warm-dark">How long does each assessment take?</span><span class="text-warm-gray text-lg leading-none faq-icon transition-transform">+</span></div>
+            <div class="faq-answer hidden mt-3"><p class="text-[11px] text-warm-gray leading-relaxed">Most assessments take between 1 and 5 minutes to complete, depending on the number of questions involved.</p></div>
+          </div>
+          <div class="faq-item py-4 cursor-pointer" onclick="toggleFaq(this)">
+            <div class="flex items-center justify-between"><span class="text-xs font-medium text-warm-dark">What happens after I complete an assessment?</span><span class="text-warm-gray text-lg leading-none faq-icon transition-transform">+</span></div>
+            <div class="faq-answer hidden mt-3"><p class="text-[11px] text-warm-gray leading-relaxed">You'll receive an instant score with a clear explanation, along with personalized wellness insights and resources from your AI Wellness Companion.</p></div>
+          </div>
+          <div class="faq-item py-4 cursor-pointer" onclick="toggleFaq(this)">
+            <div class="flex items-center justify-between"><span class="text-xs font-medium text-warm-dark">Is my assessment data kept private?</span><span class="text-warm-gray text-lg leading-none faq-icon transition-transform">+</span></div>
+            <div class="faq-answer hidden mt-3"><p class="text-[11px] text-warm-gray leading-relaxed">Yes. Your responses and results are securely stored and handled with care, in line with our privacy and data protection practices.</p></div>
+          </div>
+          <div class="faq-item py-4 cursor-pointer" onclick="toggleFaq(this)">
+            <div class="flex items-center justify-between"><span class="text-xs font-medium text-warm-dark">Can these assessments replace therapy or a diagnosis?</span><span class="text-warm-gray text-lg leading-none faq-icon transition-transform">+</span></div>
+            <div class="faq-answer hidden mt-3"><p class="text-[11px] text-warm-gray leading-relaxed">No. These tools are intended for self-reflection and wellness monitoring only. They do not provide a medical diagnosis and should not replace professional mental health care or treatment.</p></div>
+          </div>
+          <div class="faq-item py-4 cursor-pointer" onclick="toggleFaq(this)">
+            <div class="flex items-center justify-between"><span class="text-xs font-medium text-warm-dark">What if my results indicate a concern?</span><span class="text-warm-gray text-lg leading-none faq-icon transition-transform">+</span></div>
+            <div class="faq-answer hidden mt-3"><p class="text-[11px] text-warm-gray leading-relaxed">If your results suggest an area of concern, we recommend discussing them with a qualified mental health professional. If you are in crisis or at immediate risk, contact local emergency services right away.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ CTA -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-0 reveal">
+    <div class="mb-8">
+      <h2 class="font-serif text-4xl sm:text-5xl text-warm-dark leading-tight mb-4">Take the First Step Toward <em class="text-orange not-italic">Self-Awareness</em></h2>
+      <p class="text-[11px] text-warm-gray mb-6 max-w-lg">Choose from our collection of evidence-based assessments and gain clear, supportive insights into your stress, mood, sleep, and overall well-being.</p>
+      <div class="flex items-center gap-3 flex-wrap">
+        <a href="#available-assessments" class="btn-primary">Start an Assessment</a>
+        <a href="#" class="btn-outline">Talk to Your AI Companion <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5h6M5 2l3 3-3 3"/></svg></a>
+      </div>
+    </div>
+  </section>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-0">
+    <div class="relative rounded-t-sm overflow-hidden" style="height:220px;">
+      <div class="cta-landscape grain absolute inset-0"></div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ FOOTER -->
+  <footer class="border-t border-cream-border bg-cream mt-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div class="lg:col-span-1">
+          <h3 class="font-serif text-xl text-warm-dark mb-4">InnerWhispers</h3>
+          <p class="text-sm text-warm-gray mb-4 leading-relaxed">Supporting mental wellness through technology, reflection, and human-centered care.</p>
+          <p class="text-sm text-warm-gray leading-relaxed">A Mental Wellness Screening &amp; Assessment Center for everyday emotional well-being and self-reflection.</p>
+        </div>
+        <div><h4 class="font-medium text-warm-dark mb-4">Platform</h4><ul class="space-y-3 text-sm text-warm-gray"><li><a href="#" class="nav-link">AI Companion</a></li><li><a href="#" class="nav-link">Mood Tracker</a></li><li><a href="#" class="nav-link">Journal</a></li><li><a href="#" class="nav-link">Wellness Assessments</a></li><li><a href="#" class="nav-link">Wellness Resources</a></li><li><a href="#" class="nav-link">Support Center</a></li></ul></div>
+        <div><h4 class="font-medium text-warm-dark mb-4">Company</h4><ul class="space-y-3 text-sm text-warm-gray"><li><a href="#" class="nav-link">About Us</a></li><li><a href="#" class="nav-link">Our Mission</a></li><li><a href="#" class="nav-link">Careers</a></li><li><a href="#" class="nav-link">Contact Us</a></li><li><a href="#" class="nav-link">Partnerships</a></li></ul></div>
+        <div><h4 class="font-medium text-warm-dark mb-4">Resources</h4><ul class="space-y-3 text-sm text-warm-gray"><li><a href="#" class="nav-link">Mental Wellness Blog</a></li><li><a href="#" class="nav-link">Self-Care Guides</a></li><li><a href="#" class="nav-link">Community Guidelines</a></li><li><a href="#" class="nav-link">FAQs</a></li><li><a href="#" class="nav-link">Help Center</a></li></ul></div>
+        <div><h4 class="font-medium text-warm-dark mb-4">Legal</h4><ul class="space-y-3 text-sm text-warm-gray"><li><a href="#" class="nav-link">Privacy Policy</a></li><li><a href="#" class="nav-link">Terms of Service</a></li><li><a href="#" class="nav-link">Disclaimer</a></li><li><a href="#" class="nav-link">Data Protection</a></li><li><a href="#" class="nav-link">Cookie Policy</a></li></ul></div>
+      </div>
+    </div>
+    <div class="border-t border-cream-border">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h4 class="font-medium text-warm-dark mb-3">Important Notice</h4>
+        <p class="text-sm text-warm-gray leading-relaxed">These assessments are intended for educational, wellness, and self-reflection purposes only. They do not provide medical diagnoses and should not replace professional mental health care, diagnosis, or treatment. If you are experiencing severe emotional distress, thoughts of self-harm, or a mental health emergency, seek immediate support from a qualified mental health professional or local emergency services.</p>
+      </div>
+    </div>
+    <div class="border-t border-cream-border">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-warm-gray text-center md:text-left">© 2026 InnerWhispers Wellness LLP. All Rights Reserved.</p>
+        <p class="text-xs text-warm-gray text-center md:text-right">Made with empathy, technology, and a commitment to mental wellness.</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    /* ── FAQ ───────────────────────────────────────────────── */
+    function toggleFaq(el) {
+      const answer = el.querySelector('.faq-answer');
+      const icon = el.querySelector('.faq-icon');
+      const isOpen = !answer.classList.contains('hidden');
+      document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach(i => { i.textContent = '+'; i.style.transform = 'rotate(0deg)'; });
+      if (!isOpen) { answer.classList.remove('hidden'); icon.textContent = '×'; icon.style.transform = 'rotate(45deg)'; }
+    }
+
+    /* ── Scroll reveal ─────────────────────────────────────── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); animateBars(); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Animate coverage bars on reveal ──────────────────── */
+    let barsAnimated = false;
+    function animateBars() {
+      if (barsAnimated) return;
+      barsAnimated = true;
+      document.querySelectorAll('.coverage-fill').forEach(bar => {
+        const target = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = target; }, 120);
+      });
+    }
+
+    /* ── Counter animation ────────────────────────────────── */
+    function animateCounter(el, target, duration) {
+      let start = 0;
+      const step = Math.ceil(duration / target);
+      const timer = setInterval(() => {
+        start++;
+        el.textContent = start;
+        if (start >= target) clearInterval(timer);
+      }, step);
+    }
+    const counterObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          document.querySelectorAll('.counter').forEach(el => {
+            animateCounter(el, parseInt(el.dataset.target), 800);
+          });
+          counterObs.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    const heroSection = document.querySelector('.reveal');
+    if (heroSection) counterObs.observe(heroSection);
+
+    /* ── Hero terminal animation ───────────────────────────── */
+    setTimeout(() => {
+      document.getElementById('demo-status').textContent = 'Completed ✓';
+      document.getElementById('demo-status').classList.replace('text-yellow-300','text-green-400');
+    }, 1200);
+    setTimeout(() => {
+      ['demo-score-line','demo-score-val','demo-insight-line','demo-insight-val'].forEach((id,i) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          el.style.opacity = '0';
+          el.style.transition = 'opacity 0.4s';
+          el.classList.remove('opacity-0');
+          el.style.opacity = '1';
+        }, i * 300);
+      });
+    }, 1600);
+
+    /* ── Card filter + search ──────────────────────────────── */
+    let activeCat = 'all';
+    function setCatFilter(btn, cat) {
+      activeCat = cat;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterCards();
+    }
+    function filterCards() {
+      const q = document.getElementById('card-search').value.toLowerCase();
+      let shown = 0;
+      document.querySelectorAll('.assessment-card').forEach(card => {
+        const matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
+        const matchQ = !q || card.dataset.name.includes(q) || card.querySelector('p.font-medium').textContent.toLowerCase().includes(q);
+        const show = matchCat && matchQ;
+        card.style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+      document.getElementById('cards-empty').style.display = shown === 0 ? '' : 'none';
+    }
+
+    /* ── Table sort ─────────────────────────────────────────── */
+    let sortAsc = true;
+    function sortTable(field, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sortAsc = !sortAsc;
+      const tbody = document.getElementById('main-tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort((a, b) => {
+        let va, vb;
+        if (field === 'name') { va = a.dataset.name; vb = b.dataset.name; }
+        else if (field === 'duration') { va = parseInt(a.dataset.dur); vb = parseInt(b.dataset.dur); return sortAsc ? va-vb : vb-va; }
+        else if (field === 'category') { va = a.dataset.category; vb = b.dataset.category; }
+        return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    }
+
+    /* ── Category chart / grid toggle ──────────────────────── */
+    let catChartInstance = null;
+    function switchCatView(view) {
+      const gridBtn = document.getElementById('cat-grid-btn');
+      const chartBtn = document.getElementById('cat-chart-btn');
+      const gridView = document.getElementById('cat-grid-view');
+      const chartView = document.getElementById('cat-chart-view');
+      if (view === 'grid') {
+        gridBtn.classList.add('active'); chartBtn.classList.remove('active');
+        gridView.style.display = ''; chartView.style.display = 'none';
+      } else {
+        chartBtn.classList.add('active'); gridBtn.classList.remove('active');
+        gridView.style.display = 'none'; chartView.style.display = '';
+        if (!catChartInstance) buildCatChart();
+      }
+    }
+    function buildCatChart() {
+      const ctx = document.getElementById('catChart').getContext('2d');
+      catChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Stress & Burnout','Mood & Emotional','Anxiety & Resilience','Lifestyle & Habits'],
+          datasets: [{
+            label: 'Tools Available',
+            data: [2, 3, 2, 3],
+            backgroundColor: 'rgba(232,101,26,0.15)',
+            borderColor: '#e8651a',
+            borderWidth: 1,
+            borderRadius: 3,
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(216,211,200,0.5)' }, ticks: { font: { size: 9, family: 'DM Sans' }, color: '#8c8680' } },
+            y: { grid: { color: 'rgba(216,211,200,0.5)' }, ticks: { stepSize: 1, font: { size: 9, family: 'JetBrains Mono' }, color: '#8c8680' } }
+          }
+        }
+      });
+    }
+
+    /* ── PHQ-9 score gauge ─────────────────────────────────── */
+    const zones = [
+      { max: 4,  label: 'Minimal',  color: '#16a34a', desc: 'Little to no symptoms present. Continue self-care practices.' },
+      { max: 9,  label: 'Mild',     color: '#e8651a', desc: 'Mild symptoms present. Monitoring and lifestyle adjustments may help.' },
+      { max: 14, label: 'Moderate', color: '#f59e0b', desc: 'Moderate symptoms. Consider reaching out to a wellness professional.' },
+      { max: 19, label: 'Mod-Severe',color: '#ef4444', desc: 'Moderately severe symptoms. Professional consultation recommended.' },
+      { max: 27, label: 'Severe',   color: '#991b1b', desc: 'Severe symptoms. Please seek support from a mental health professional.' },
+    ];
+    function updateGauge(val) {
+      val = parseInt(val);
+      const zone = zones.find(z => val <= z.max);
+      const pct = val / 27;
+      const totalArc = 204;
+      const offset = totalArc - pct * totalArc;
+      const arc = document.getElementById('gauge-arc');
+      arc.setAttribute('stroke-dashoffset', offset);
+      arc.setAttribute('stroke', zone.color);
+      document.getElementById('gauge-label').textContent = val;
+      document.getElementById('zone-label').textContent = zone.label;
+      document.getElementById('zone-desc').textContent = zone.desc;
+      document.getElementById('zone-label').style.color = zone.color;
+    }
+    updateGauge(5);
+  </script>
+</body>
+</html>

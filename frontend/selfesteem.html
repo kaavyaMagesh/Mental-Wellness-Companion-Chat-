@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Self-Esteem Assessment (RSES) - InnerWhispers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            sans: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cream: '#f5f2eb',
+            'cream-dark': '#ede9df',
+            'cream-border': '#d8d3c8',
+            'warm-gray': '#8c8680',
+            'warm-dark': '#2a2520',
+            orange: '#e8651a',
+            'orange-light': '#f0894d',
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background: #f5f2eb;
+      color: #2a2520;
+      font-family: 'DM Sans', sans-serif;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .btn-primary { background:#e8651a; color:white; font-size:.875rem; font-weight:500; padding:9px 18px; border-radius:4px; border:none; cursor:pointer; transition:background .15s; font-family:'DM Sans',sans-serif; white-space:nowrap; }
+    .btn-primary:hover { background:#d45a14; }
+    .btn-primary:active { background:#c05010; }
+    .btn-secondary { background:transparent; border:1px solid #d8d3c8; color:#2a2520; padding:9px 18px; border-radius:4px; cursor:pointer; font-size:.875rem; transition:all .15s; font-family:'DM Sans',sans-serif; }
+    .btn-secondary:hover { background:rgba(0,0,0,.03); border-color:#2a2520; }
+    .nav-item { transition:all .2s; background:transparent; border:none; cursor:pointer; text-align:left; border-radius:5px; }
+    .nav-item:hover { background:rgba(232,101,26,.07); }
+    .nav-item.active { color:#e8651a; background:rgba(232,101,26,.12); }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { renderSelfEsteemForm } from "./js/SelfEsteemForm.js";
+    renderSelfEsteemForm();
+  </script>
+</body>
+</html>

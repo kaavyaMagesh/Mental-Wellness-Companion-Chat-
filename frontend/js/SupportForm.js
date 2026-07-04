@@ -26,9 +26,12 @@ export function renderSupportForm() {
           </div>
         </div>
 
-        <div style="padding:10px 20px; flex-shrink:0; border-bottom:1px solid #d8d3c8;">
+        <div style="padding:10px 20px; flex-shrink:0; border-bottom:1px solid #d8d3c8; display: flex; flex-direction: column; gap: 8px;">
           <a href="chat.html" class="btn-primary" style="display:block; text-align:center; text-decoration:none; font-size:11px; padding:8px 14px;">
             ← Back to Chat
+          </a>
+          <a href="assessment.html" class="btn-secondary" style="display:block; text-align:center; text-decoration:none; font-size:11px; padding:8px 14px;">
+            PHQ-9 Assessment
           </a>
         </div>
 

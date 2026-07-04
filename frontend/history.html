@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assessment History | InnerWhispers</title>
+  <meta name="description" content="View your mental wellness assessment history — track PHQ-9, GAD-7, and PSS-10 scores over time with trend charts and severity insights." />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f5f2eb; --cream-dark: #ede9df; --cream-border: #d8d3c8;
+      --warm-gray: #8c8680; --warm-dark: #2a2520;
+      --orange: #e8651a; --orange-light: #f0894d;
+      --green: #5f8a4a; --yellow: #c8b878; --red: #c83c28; --amber: #e8a84d;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--warm-dark); min-height: 100vh; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--cream-border); border-radius: 3px; }
+
+    /* Nav */
+    .topnav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(245,242,235,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--cream-border);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topnav-brand { font-family: 'Instrument Serif', serif; font-size: 18px; letter-spacing: -0.01em; color: var(--warm-dark); text-decoration: none; }
+    .topnav-actions { display: flex; align-items: center; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; letter-spacing: 0.02em; padding: 7px 14px; border-radius: 4px; border: none; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+    .btn-ghost { background: transparent; color: var(--warm-gray); border: 1px solid var(--cream-border); }
+    .btn-ghost:hover { background: var(--cream-dark); color: var(--warm-dark); }
+    .btn-primary { background: var(--orange); color: white; }
+    .btn-primary:hover { background: #d45a14; }
+    .btn-danger { background: rgba(200,60,40,0.08); color: var(--red); border: 1px solid rgba(200,60,40,0.2); }
+    .btn-danger:hover { background: rgba(200,60,40,0.16); }
+
+    /* Layout */
+    .page { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+    .page-header { margin-bottom: 36px; }
+    .page-title { font-family: 'Instrument Serif', serif; font-size: clamp(26px,4vw,36px); letter-spacing: -0.02em; color: var(--warm-dark); margin-bottom: 6px; }
+    .page-subtitle { font-size: 14px; color: var(--warm-gray); line-height: 1.55; }
+
+    /* Filters */
+    .filter-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .filter-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; letter-spacing: 0.03em; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--cream-border); background: transparent; cursor: pointer; color: var(--warm-gray); transition: all 0.15s; }
+    .filter-chip.active, .filter-chip:hover { border-color: var(--orange); color: var(--orange); background: rgba(232,101,26,0.06); }
+    .filter-chip.active { font-weight: 600; }
+    .filter-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* Cards */
+    .card { background: rgba(255,255,255,0.55); border: 1px solid var(--cream-border); border-radius: 10px; backdrop-filter: blur(4px); }
+
+    /* Stats */
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: rgba(255,255,255,0.55); border: 1px solid var(--cream-border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
+    .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:10px 10px 0 0; }
+    .stat-card.phq::before { background: linear-gradient(90deg,#7b8fd4,#a0aee8); }
+    .stat-card.gad::before { background: linear-gradient(90deg,#5f8a4a,#82b860); }
+    .stat-card.pss::before { background: linear-gradient(90deg,#e8651a,#f0894d); }
+    .stat-label { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 8px; }
+    .stat-value { font-family: 'Instrument Serif', serif; font-size: 32px; letter-spacing: -0.02em; color: var(--warm-dark); }
+    .stat-meta { font-size: 11px; color: var(--warm-gray); margin-top: 4px; }
+    .stat-trend { font-size: 11px; font-weight: 500; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+
+    /* Charts */
+    .chart-section { margin-bottom: 32px; }
+    .section-title { font-family: 'Instrument Serif', serif; font-size: 20px; letter-spacing: -0.01em; color: var(--warm-dark); margin-bottom: 16px; }
+    .chart-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 16px; }
+    .chart-card { padding: 20px 22px 16px; }
+    .chart-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .chart-card-title { font-size: 13px; font-weight: 600; color: var(--warm-dark); display: flex; align-items: center; gap: 8px; }
+    .chart-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .chart-count { font-size: 11px; color: var(--warm-gray); font-family: 'JetBrains Mono', monospace; }
+    .chart-canvas-wrap { position: relative; height: 160px; }
+    .chart-empty { display: flex; align-items: center; justify-content: center; height: 160px; flex-direction: column; gap: 8px; color: var(--warm-gray); font-size: 12px; text-align: center; }
+    .chart-empty svg { opacity: 0.35; }
+
+    /* Timeline */
+    .timeline-section { margin-bottom: 32px; }
+    .timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+    .timeline { display: flex; flex-direction: column; gap: 10px; }
+    .timeline-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: rgba(255,255,255,0.55); border: 1px solid var(--cream-border); border-radius: 8px; transition: border-color 0.15s, background 0.15s; cursor: default; }
+    .timeline-item:hover { border-color: rgba(232,101,26,0.3); background: rgba(255,255,255,0.75); }
+    .timeline-icon { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .timeline-icon.phq { background: rgba(123,143,212,0.15); color: #5568c0; }
+    .timeline-icon.gad { background: rgba(95,138,74,0.15); color: #5f8a4a; }
+    .timeline-icon.pss { background: rgba(232,101,26,0.12); color: #e8651a; }
+    .timeline-body { flex: 1; min-width: 0; }
+    .timeline-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .timeline-name { font-size: 13px; font-weight: 600; color: var(--warm-dark); }
+    .timeline-date { font-size: 11px; color: var(--warm-gray); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+    .timeline-bottom { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .timeline-score { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--warm-dark); font-weight: 500; }
+    .severity-pill { font-size: 10px; font-weight: 500; letter-spacing: 0.03em; padding: 2px 9px; border-radius: 999px; }
+    .sev-minimal, .sev-low { background: rgba(95,138,74,0.12); color: #4a7040; }
+    .sev-mild { background: rgba(200,184,120,0.2); color: #8a7820; }
+    .sev-moderate { background: rgba(232,101,26,0.12); color: #c05010; }
+    .sev-moderately-severe { background: rgba(232,101,26,0.18); color: #b04000; }
+    .sev-high, .sev-severe { background: rgba(200,60,40,0.12); color: #a02820; }
+    .timeline-bar-wrap { flex: 1; max-width: 120px; }
+    .timeline-bar-bg { background: var(--cream-dark); border-radius: 999px; height: 5px; overflow: hidden; }
+    .timeline-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 80px 24px; background: rgba(255,255,255,0.45); border: 1px dashed var(--cream-border); border-radius: 12px; }
+    .empty-state svg { opacity: 0.3; margin: 0 auto 20px; display: block; }
+    .empty-state h2 { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; color: var(--warm-gray); line-height: 1.6; margin-bottom: 24px; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+    /* Demo banner */
+    .demo-banner { background: rgba(232,101,26,0.07); border: 1px solid rgba(232,101,26,0.2); border-radius: 8px; padding: 10px 16px; margin-bottom: 24px; font-size: 12px; color: #a04010; display: flex; align-items: center; gap: 8px; }
+
+    @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+    .fade-up { animation: fadeUp 0.4s ease both; }
+
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .chart-grid { grid-template-columns: 1fr; }
+      .timeline-bar-wrap { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="topnav-brand" href="assessments.html">InnerWhispers</a>
+  <div class="topnav-actions">
+    <a href="assessments.html" class="btn btn-ghost">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l-7 7 7 7M2 12h20"/></svg>
+      Assessments
+    </a>
+    <a href="chat.html" class="btn btn-ghost">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+      Chat
+    </a>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="page-header fade-up">
+    <h1 class="page-title">Assessment History</h1>
+    <p class="page-subtitle">Your mental wellness journey — track trends, compare scores, and monitor progress over time.</p>
+  </div>
+
+  <div class="filter-bar fade-up" id="filterBar">
+    <button class="filter-chip active" data-type="all" onclick="setFilter('all')">All assessments</button>
+    <button class="filter-chip" data-type="PHQ-9" onclick="setFilter('PHQ-9')">
+      <span class="filter-dot" style="background:#7b8fd4;"></span> PHQ-9 Depression
+    </button>
+    <button class="filter-chip" data-type="GAD-7" onclick="setFilter('GAD-7')">
+      <span class="filter-dot" style="background:#5f8a4a;"></span> GAD-7 Anxiety
+    </button>
+    <button class="filter-chip" data-type="PSS-10" onclick="setFilter('PSS-10')">
+      <span class="filter-dot" style="background:#e8651a;"></span> PSS-10 Stress
+    </button>
+  </div>
+
+  <div id="mainContent"></div>
+</main>
+
+<script>
+const TYPES = {
+  'PHQ-9':  { label:'Depression', color:'#7b8fd4', colorAlpha:'rgba(123,143,212,0.15)', max:27, abbr:'PHQ', cls:'phq' },
+  'GAD-7':  { label:'Anxiety',    color:'#5f8a4a', colorAlpha:'rgba(95,138,74,0.15)',   max:21, abbr:'GAD', cls:'gad' },
+  'PSS-10': { label:'Stress',     color:'#e8651a', colorAlpha:'rgba(232,101,26,0.12)',  max:40, abbr:'PSS', cls:'pss' },
+};
+const SEV_LABELS = { minimal:'Minimal', mild:'Mild', moderate:'Moderate', 'moderately-severe':'Mod. Severe', severe:'Severe', low:'Low', high:'High' };
+const SEV_COLORS = { minimal:'#5f8a4a', low:'#5f8a4a', mild:'#c8b878', moderate:'#e8651a', 'moderately-severe':'#c87028', high:'#c83c28', severe:'#c83c28' };
+
+let currentFilter = 'all';
+let charts = {};
+let isDemo = false;
+
+function seedDemoIfEmpty() {
+  const existing = JSON.parse(localStorage.getItem('assessment_history') || '[]');
+  if (existing.length > 0) return;
+  isDemo = true;
+  const now = Date.now(), week = 7*24*3600*1000;
+  const demo = [
+    { type:'PHQ-9',  label:'Depression', score:15, maxScore:27, level:'moderate',           date: new Date(now-5*week).toISOString() },
+    { type:'PHQ-9',  label:'Depression', score:12, maxScore:27, level:'moderate',           date: new Date(now-3*week).toISOString() },
+    { type:'PHQ-9',  label:'Depression', score:8,  maxScore:27, level:'mild',               date: new Date(now-1*week).toISOString() },
+    { type:'GAD-7',  label:'Anxiety',    score:10, maxScore:21, level:'moderate',           date: new Date(now-5*week).toISOString() },
+    { type:'GAD-7',  label:'Anxiety',    score:13, maxScore:21, level:'moderate',           date: new Date(now-3*week).toISOString() },
+    { type:'GAD-7',  label:'Anxiety',    score:7,  maxScore:21, level:'mild',               date: new Date(now-1*week).toISOString() },
+    { type:'PSS-10', label:'Stress',     score:26, maxScore:40, level:'moderate',           date: new Date(now-4*week).toISOString() },
+    { type:'PSS-10', label:'Stress',     score:19, maxScore:40, level:'moderate',           date: new Date(now-2*week).toISOString() },
+    { type:'PSS-10', label:'Stress',     score:12, maxScore:40, level:'low',                date: new Date(now-1.5*week).toISOString() },
+  ];
+  localStorage.setItem('assessment_history', JSON.stringify(demo));
+}
+
+function loadHistory() {
+  return JSON.parse(localStorage.getItem('assessment_history') || '[]').sort((a,b)=>new Date(a.date)-new Date(b.date));
+}
+
+function setFilter(type) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active', c.dataset.type===type));
+  render();
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+function formatDateShort(iso) {
+  return new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+}
+
+function trendInfo(entries) {
+  if (entries.length < 2) return null;
+  const diff = entries[entries.length-1].score - entries[entries.length-2].score;
+  if (diff < 0) return { icon:'↓', label:`${Math.abs(diff)} from last`, color:'#5f8a4a' };
+  if (diff > 0) return { icon:'↑', label:`+${diff} from last`, color:'#c83c28' };
+  return { icon:'→', label:'No change', color:'#8c8680' };
+}
+
+function renderStats(data) {
+  return '<div class="stats-row fade-up">' + ['PHQ-9','GAD-7','PSS-10'].map(t=>{
+    const cfg = TYPES[t];
+    const entries = data.filter(d=>d.type===t);
+    if (!entries.length) return `<div class="stat-card ${cfg.cls}"><div class="stat-label">${t} · ${cfg.label}</div><div class="stat-value" style="color:var(--warm-gray);font-size:20px;margin-top:8px;">No data</div><div class="stat-meta">Take your first ${t}</div></div>`;
+    const last = entries[entries.length-1];
+    const trend = trendInfo(entries);
+    return `<div class="stat-card ${cfg.cls}"><div class="stat-label">${t} · ${cfg.label}</div><div class="stat-value">${last.score}<span style="font-size:16px;color:var(--warm-gray);font-family:'DM Sans',sans-serif;"> / ${cfg.max}</span></div><div class="stat-meta">${SEV_LABELS[last.level]||last.level} · ${formatDate(last.date)}</div>${trend?`<div class="stat-trend" style="color:${trend.color};">${trend.icon} ${trend.label}</div>`:''}</div>`;
+  }).join('') + '</div>';
+}
+
+function renderCharts(data) {
+  Object.values(charts).forEach(c=>{try{c.destroy();}catch(e){}});
+  charts = {};
+  const types = currentFilter==='all' ? ['PHQ-9','GAD-7','PSS-10'] : [currentFilter];
+  const cards = types.map(t=>{
+    const cfg = TYPES[t];
+    const entries = data.filter(d=>d.type===t);
+    const hasData = entries.length > 0;
+    return `<div class="card chart-card"><div class="chart-card-header"><div class="chart-card-title"><span class="chart-dot" style="background:${cfg.color};"></span>${t} <span style="color:var(--warm-gray);font-weight:400;">${cfg.label}</span></div><span class="chart-count">${hasData?entries.length+' session'+(entries.length!==1?'s':''):'—'}</span></div><div class="chart-canvas-wrap">${hasData?`<canvas id="chart_${t.replace('-','_')}"></canvas>`:`<div class="chart-empty"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span>No entries yet</span><span style="font-size:10px;color:#b0a898;">Complete a ${t} to see your trend</span></div>`}</div></div>`;
+  }).join('');
+  return `<section class="chart-section"><h2 class="section-title">Score Trend</h2><div class="chart-grid fade-up">${cards}</div></section>`;
+}
+
+function buildCharts(data) {
+  const types = currentFilter==='all' ? ['PHQ-9','GAD-7','PSS-10'] : [currentFilter];
+  types.forEach(t=>{
+    const cfg = TYPES[t];
+    const entries = data.filter(d=>d.type===t);
+    if (!entries.length) return;
+    const canvas = document.getElementById('chart_'+t.replace('-','_'));
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0,0,0,160);
+    gradient.addColorStop(0, cfg.color+'33');
+    gradient.addColorStop(1, 'rgba(245,242,235,0)');
+    charts[t] = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: entries.map(e=>formatDateShort(e.date)),
+        datasets: [{
+          data: entries.map(e=>e.score),
+          borderColor: cfg.color,
+          borderWidth: 2.5,
+          pointBackgroundColor: entries.map(e=>SEV_COLORS[e.level]||cfg.color),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          tension: 0.35,
+          fill: true,
+          backgroundColor: gradient,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(42,37,32,0.92)',
+            titleColor: '#d8d3c8',
+            bodyColor: '#f5f2eb',
+            padding: 10, cornerRadius: 6,
+            callbacks: {
+              title: (items)=>entries[items[0].dataIndex]?formatDate(entries[items[0].dataIndex].date):'',
+              label: (item)=>{ const e=entries[item.dataIndex]; return [` Score: ${e.score} / ${cfg.max}`, ` Level: ${SEV_LABELS[e.level]||e.level}`]; }
+            }
+          }
+        },
+        scales: {
+          x: { grid:{color:'rgba(216,211,200,0.4)'}, ticks:{color:'#8c8680',font:{size:10,family:'JetBrains Mono'}} },
+          y: { min:0, max:cfg.max, grid:{color:'rgba(216,211,200,0.4)'}, ticks:{color:'#8c8680',font:{size:10,family:'JetBrains Mono'},stepSize:Math.ceil(cfg.max/5)} }
+        }
+      }
+    });
+  });
+}
+
+function renderTimeline(data) {
+  const displayData = [...(currentFilter==='all'?data:data.filter(d=>d.type===currentFilter))].reverse();
+  if (!displayData.length) return `<div class="empty-state fade-up"><svg width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg><h2>No assessments yet</h2><p>Complete your first PHQ-9, GAD-7, or PSS-10 assessment to start tracking your mental wellness journey.</p><a href="assessments.html" class="btn btn-primary">Take an Assessment</a></div>`;
+  const items = displayData.map(e=>{
+    const cfg = TYPES[e.type]||{};
+    const maxS = e.maxScore || cfg.max || 40;
+    const pct = Math.round((e.score/maxS)*100);
+    const sevColor = SEV_COLORS[e.level]||'#8c8680';
+    return `<div class="timeline-item"><div class="timeline-icon ${cfg.cls||''}">${cfg.abbr||e.type.substring(0,3)}</div><div class="timeline-body"><div class="timeline-top"><span class="timeline-name">${e.type} · ${cfg.label||e.label}</span><span class="timeline-date">${formatDate(e.date)}</span></div><div class="timeline-bottom"><span class="timeline-score">${e.score} / ${maxS}</span><span class="severity-pill sev-${e.level}">${SEV_LABELS[e.level]||e.level}</span><div class="timeline-bar-wrap"><div class="timeline-bar-bg"><div class="timeline-bar-fill" style="width:${pct}%;background:${sevColor};"></div></div></div></div></div></div>`;
+  }).join('');
+  return `<section class="timeline-section fade-up"><div class="timeline-header"><h2 class="section-title" style="margin-bottom:0;">Session Log</h2><button class="btn btn-danger" onclick="clearHistory()"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>Clear all</button></div><div class="timeline">${items}</div></section>`;
+}
+
+function clearHistory() {
+  if (!confirm('Clear all assessment history? This cannot be undone.')) return;
+  localStorage.removeItem('assessment_history');
+  isDemo = false;
+  render();
+}
+
+function render() {
+  const data = loadHistory();
+  const container = document.getElementById('mainContent');
+  if (!data.length) { container.innerHTML = renderTimeline(data); return; }
+  const demoBanner = isDemo ? `<div class="demo-banner fade-up"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4M12 16h.01"/></svg>Showing demo data. Complete an assessment to see your real results.</div>` : '';
+  container.innerHTML = demoBanner + (currentFilter==='all' ? renderStats(data) : '') + renderCharts(data) + renderTimeline(data);
+  requestAnimationFrame(()=>buildCharts(data));
+}
+
+seedDemoIfEmpty();
+render();
+</script>
+</body>
+</html>

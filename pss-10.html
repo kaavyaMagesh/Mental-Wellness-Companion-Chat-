@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perceived Stress Scale (PSS-10) — InnerWhispers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Instrument Serif','Georgia','serif'],
+            sans: ['DM Sans','sans-serif'],
+            mono: ['JetBrains Mono','monospace'],
+          },
+          colors: {
+            cream: '#f5f2eb',
+            'cream-dark': '#ede9df',
+            'cream-border': '#d8d3c8',
+            'warm-gray': '#8c8680',
+            'warm-dark': '#2a2520',
+            orange: '#e8651a',
+            'orange-light': '#f0894d',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    *{box-sizing:border-box;}
+    body{background-color:#f5f2eb;color:#2a2520;font-family:'DM Sans',sans-serif;}
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:#f5f2eb;}
+    ::-webkit-scrollbar-thumb{background:#c8b878;border-radius:3px;}
+
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes barGrow{from{width:0;}}
+    .fade-in{animation:fadeSlide 0.35s ease-out;}
+
+    .btn-primary{background:#e8651a;color:white;font-size:.875rem;font-weight:500;padding:10px 22px;border-radius:3px;border:none;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;}
+    .btn-primary:hover{background:#d45a14;}
+    .btn-primary:disabled{background:#c8b878;cursor:not-allowed;opacity:.6;}
+    .btn-secondary{background:transparent;border:1px solid #d8d3c8;color:#2a2520;padding:10px 22px;border-radius:3px;cursor:pointer;font-size:.875rem;transition:all .15s;display:inline-flex;align-items:center;gap:7px;}
+    .btn-secondary:hover{background:rgba(0,0,0,.03);border-color:#2a2520;}
+    .btn-secondary:disabled{opacity:.4;cursor:not-allowed;}
+
+    .card{background:rgba(255,255,255,.6);border:1px solid #d8d3c8;border-radius:8px;}
+    .progress-track{background:#ede9df;border-radius:999px;height:8px;overflow:hidden;}
+    .progress-fill{background:linear-gradient(90deg,#e8651a,#f0894d);height:100%;border-radius:999px;transition:width .4s ease;}
+
+    .option{display:flex;align-items:center;gap:14px;border:1px solid #d8d3c8;border-radius:6px;padding:13px 16px;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.4);}
+    .option:hover{border-color:#e8651a;background:rgba(232,101,26,.05);}
+    .option.selected{border-color:#e8651a;background:rgba(232,101,26,.08);}
+    .option-radio{width:20px;height:20px;border-radius:50%;border:2px solid #d8d3c8;flex-shrink:0;position:relative;transition:all .15s;}
+    .option.selected .option-radio{border-color:#e8651a;}
+    .option.selected .option-radio::after{content:'';position:absolute;inset:3px;border-radius:50%;background:#e8651a;}
+    .option-icon{width:34px;height:34px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#ede9df;color:#8c8680;transition:all .15s;}
+    .option.selected .option-icon{background:rgba(232,101,26,.12);color:#e8651a;}
+
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:.02em;}
+    .badge-moderate{background:rgba(232,101,26,.12);color:#e8651a;}
+    .badge-low{background:rgba(120,160,100,.15);color:#5f8a4a;}
+    .badge-high{background:rgba(200,60,40,.12);color:#c83c28;}
+
+    .score-ring-bg{stroke:#ede9df;}
+    .score-ring-fill{stroke:#e8651a;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .8s ease;}
+
+    .resource-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #d8d3c8;border-radius:6px;background:rgba(255,255,255,.4);transition:all .15s;cursor:pointer;}
+    .resource-item:hover{border-color:#e8651a;background:rgba(232,101,26,.05);}
+    .resource-icon{width:34px;height:34px;border-radius:6px;background:rgba(232,101,26,.1);color:#e8651a;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+    .insight-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #ede9df;font-size:13px;line-height:1.55;}
+    .insight-item:last-child{border-bottom:none;}
+    .insight-icon{width:28px;height:28px;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+
+    .bar-bg{background:#ede9df;border-radius:3px;height:8px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:3px;animation:barGrow .7s ease-out;}
+
+    .range-bar{position:relative;height:10px;border-radius:999px;overflow:visible;margin:6px 0 14px;}
+    .range-track{position:absolute;inset:0;border-radius:999px;background:linear-gradient(90deg,#5f8a4a 33%,#e8651a 66%,#c83c28 100%);}
+    .range-marker{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:white;border:3px solid #2a2520;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:left .8s ease;}
+
+    .tab-btn{padding:7px 14px;font-size:12px;border-radius:4px;border:none;background:transparent;cursor:pointer;color:#8c8680;font-weight:500;transition:all .15s;}
+    .tab-btn.active{background:white;color:#2a2520;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+
+    .freq-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid #d8d3c8;border-radius:999px;font-size:12px;background:rgba(255,255,255,.5);color:#2a2520;}
+    .freq-pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+    canvas{display:block;}
+  </style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+
+  <!-- Brand -->
+  <div class="flex items-center gap-2 mb-8">
+    <div class="w-7 h-7 rounded bg-gradient-to-br from-orange to-orange-light flex items-center justify-center">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="white">
+        <rect width="7" height="7"/><rect x="9" width="7" height="7" opacity=".8"/><rect x="9" y="9" width="7" height="7" opacity=".6"/>
+      </svg>
+    </div>
+    <p class="font-medium text-warm-dark text-xs tracking-tight">InnerWhispers</p>
+  </div>
+
+  <!-- QUIZ VIEW -->
+  <div id="quizView">
+    <div class="mb-6 fade-in">
+      <h1 class="font-serif text-2xl sm:text-3xl text-warm-dark mb-1">Perceived Stress Scale (PSS-10)</h1>
+      <p class="text-sm text-warm-gray mb-5">Measure how stressful situations in your life have felt during the last month.</p>
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-warm-gray" id="questionCounter">Question 1 of 10</span>
+        <span class="text-xs font-mono text-warm-gray" id="progressPercent">10%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:10%;"></div></div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="card p-5 mb-5 fade-in">
+      <p class="text-sm font-medium text-warm-dark mb-1">During the last month, how often have you felt or thought the following?</p>
+      <p class="text-xs text-warm-gray mb-4">Select the option that best describes your experience. There are no right or wrong answers.</p>
+      
+    </div>
+
+    <!-- Question Card -->
+    <div class="card p-5 sm:p-6 mb-6 fade-in" id="questionCard">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-[11px] font-medium text-orange uppercase tracking-wider" id="questionLabel">Question 1</p>
+        <span class="text-[10px] text-warm-gray font-mono" id="reverseTag"></span>
+      </div>
+      <h2 class="font-serif text-lg sm:text-xl text-warm-dark mb-5 leading-snug" id="questionText"></h2>
+      <div class="space-y-2" id="optionsList"></div>
+    </div>
+
+    <!-- Nav -->
+    <div class="flex items-center justify-between">
+      <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        Previous
+      </button>
+      <button class="btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
+        Next
+        <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- COMPLETION VIEW -->
+  <div id="completionView" class="hidden">
+    <div class="card p-8 sm:p-10 text-center fade-in">
+      <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-gradient-to-br from-orange to-orange-light flex items-center justify-center">
+        <svg width="28" height="28" fill="none" stroke="white" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h1 class="font-serif text-2xl sm:text-3xl text-warm-dark mb-2">Assessment Complete</h1>
+      <p class="text-sm text-warm-gray mb-8">Thank you for completing the Perceived Stress Scale. Your results are ready.</p>
+      <button class="btn-primary" onclick="showResults()">
+        <svg width="15" height="15" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        View My Results
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTS VIEW -->
+  <div id="resultsView" class="hidden">
+
+    <!-- Score Card -->
+    <div class="card p-6 sm:p-8 mb-5 fade-in text-center">
+      <p class="text-[11px] font-medium text-warm-gray uppercase tracking-wider mb-4">Your Stress Score</p>
+      <div class="relative w-36 h-36 mx-auto mb-4">
+        <svg viewBox="0 0 120 120" class="w-full h-full">
+          <circle class="score-ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="10"/>
+          <circle class="score-ring-fill" id="scoreRing" cx="60" cy="60" r="52" fill="none" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="font-serif text-3xl text-warm-dark" id="scoreValue">0</span>
+          <span class="text-xs text-warm-gray">/ 40</span>
+        </div>
+      </div>
+      <span class="badge badge-moderate mb-3" id="severityBadge">Moderate Perceived Stress</span>
+      <p class="text-sm text-warm-gray leading-relaxed max-w-md mx-auto" id="severityText"></p>
+
+      <!-- Range bar -->
+      <div class="mt-5 max-w-xs mx-auto">
+        <div class="range-bar">
+          <div class="range-track"></div>
+          <div class="range-marker" id="rangeMarker" style="left:50%;"></div>
+        </div>
+        <div class="flex justify-between text-[10px] text-warm-gray mt-1">
+          <span>Low (0–13)</span><span>Moderate (14–26)</span><span>High (27–40)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Tabs -->
+    <div class="card p-5 sm:p-6 mb-5 fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <h3 class="font-serif text-lg text-warm-dark">Score Analysis</h3>
+        <div class="flex gap-1 rounded-md p-1" style="background:#ede9df;">
+          <button class="tab-btn active" onclick="switchTab('bar')" id="tabBar">Per Question</button>
+          <button class="tab-btn" onclick="switchTab('radar')" id="tabRadar">Radar</button>
+          <button class="tab-btn" onclick="switchTab('dist')" id="tabDist">Distribution</button>
+        </div>
+      </div>
+
+      <div id="chartBar">
+        <p class="text-xs text-warm-gray mb-3">Effective score contribution per question (after reverse-scoring applied)</p>
+        <div id="barList" class="space-y-3"></div>
+      </div>
+
+      <div id="chartRadar" class="hidden">
+        <p class="text-xs text-warm-gray mb-3">Visualisation across all 10 items — outer edge = maximum stress (4).</p>
+        <canvas id="radarCanvas" width="420" height="300" style="max-width:100%;margin:0 auto;"></canvas>
+      </div>
+
+      <div id="chartDist" class="hidden">
+        <p class="text-xs text-warm-gray mb-3">Approximate PSS-10 adult population distribution — where your score sits.</p>
+        <canvas id="distCanvas" width="420" height="200" style="max-width:100%;margin:0 auto;"></canvas>
+        <div class="mt-3 flex items-center gap-4 justify-center flex-wrap text-xs text-warm-gray">
+          <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-sm" style="background:#d8d3c8;"></span>Population distribution</span>
+          <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-sm" style="background:#e8651a;"></span>Your score</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain Breakdown -->
+    <div class="card p-5 sm:p-6 mb-5 fade-in">
+      <h3 class="font-serif text-lg text-warm-dark mb-1">Domain Breakdown</h3>
+      <p class="text-xs text-warm-gray mb-4">The PSS-10 measures two underlying dimensions of perceived stress.</p>
+      <div id="domainCards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- Personalised Insights -->
+    <div class="card p-5 sm:p-6 mb-5 fade-in">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-6 h-6 rounded bg-gradient-to-br from-orange to-orange-light flex items-center justify-center flex-shrink-0">
+          <svg width="12" height="12" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <h3 class="font-serif text-lg text-warm-dark">Personalised Insights</h3>
+      </div>
+      <p class="text-xs text-warm-gray mb-3">Based on your response pattern:</p>
+      <div id="insightsList"></div>
+    </div>
+
+    <!-- Response Review -->
+    <div class="card p-5 sm:p-6 mb-5 fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-serif text-lg text-warm-dark">Your Responses</h3>
+        <span class="text-xs text-warm-gray">10 questions answered</span>
+      </div>
+      <div id="responseReview" class="space-y-1"></div>
+    </div>
+
+    <!-- Recommended Resources -->
+    <div class="card p-5 sm:p-6 mb-5 fade-in">
+      <h3 class="font-serif text-lg text-warm-dark mb-4">Recommended Resources</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="resource-item">
+          <div class="resource-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          </div>
+          <div><p class="text-sm font-medium text-warm-dark">Stress Management Guide</p><p class="text-xs text-warm-gray">Evidence-based practical strategies</p></div>
+        </div>
+        <div class="resource-item">
+          <div class="resource-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+          </div>
+          <div><p class="text-sm font-medium text-warm-dark">Breathing Exercises</p><p class="text-xs text-warm-gray">Box breathing, 4-7-8, and more</p></div>
+        </div>
+        <div class="resource-item">
+          <div class="resource-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </div>
+          <div><p class="text-sm font-medium text-warm-dark">Guided Journal Prompt</p><p class="text-xs text-warm-gray">Reflect and reframe your thoughts</p></div>
+        </div>
+        <div class="resource-item">
+          <div class="resource-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <div><p class="text-sm font-medium text-warm-dark">AI Wellness Conversation</p><p class="text-xs text-warm-gray">Talk with your wellness companion</p></div>
+        </div>
+        <div class="resource-item sm:col-span-2">
+          <div class="resource-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </div>
+          <div><p class="text-sm font-medium text-warm-dark">Mindfulness &amp; Self-Care</p><p class="text-xs text-warm-gray">Daily practices to build resilience and reduce perceived stress over time</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSS note -->
+    <div class="card p-5 mb-5 fade-in" style="background:rgba(232,101,26,.04);">
+      <div class="flex gap-3 items-start">
+        <div class="w-8 h-8 rounded flex items-center justify-center flex-shrink-0" style="background:rgba(232,101,26,.12);color:#e8651a;">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-warm-dark mb-1">About the PSS-10</p>
+          <p class="text-xs text-warm-gray leading-relaxed">Developed by Cohen, Kamarck &amp; Mermelstein (1983). This is a validated psychological tool for measuring perceived stress, not a clinical diagnosis. Scores reflect the past month and may vary over time. If you are concerned about your mental health, please consult a qualified professional.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+      <button class="btn-primary w-full justify-center" onclick="alert('Opening AI Companion chat...')">
+        <svg width="15" height="15" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        Talk to AI Companion
+      </button>
+      <button class="btn-secondary w-full justify-center" onclick="alert('Opening Mood Tracker...')">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Track My Mood
+      </button>
+      <button class="btn-secondary w-full justify-center" onclick="restartAssessment()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Retake Assessment
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  "In the last month, how often have you been upset because of something that happened unexpectedly?",
+  "In the last month, how often have you felt that you were unable to control the important things in your life?",
+  "In the last month, how often have you felt nervous and stressed?",
+  "In the last month, how often have you felt confident about your ability to handle your personal problems?",
+  "In the last month, how often have you felt that things were going your way?",
+  "In the last month, how often have you found that you could not cope with all the things that you had to do?",
+  "In the last month, how often have you been able to control irritations in your life?",
+  "In the last month, how often have you felt that you were on top of things?",
+  "In the last month, how often have you been angered because of things that happened that were outside of your control?",
+  "In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?"
+];
+
+const reverseScored = [3,4,6,7];
+
+const optionLabels = [
+  {label:"Never",       score:0, color:"#ded9cf", tag:"Rare"},
+  {label:"Almost Never",score:1, color:"#c8b878", tag:"Low"},
+  {label:"Sometimes",   score:2, color:"#e8a84d", tag:"Moderate"},
+  {label:"Fairly Often",score:3, color:"#e8651a", tag:"High"},
+  {label:"Very Often",  score:4, color:"#c83c28", tag:"Peak"}
+];
+
+const optionIcons = [
+  `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6"/></svg>`,
+  `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 14.5s1 1 3.5 1 3.5-1 3.5-1M9 9h.01M15 9h.01"/></svg>`,
+  `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 15s1 .5 3 0M15 15s-1 .5-3 0M9 9h.01M15 9h.01"/></svg>`,
+  `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 15s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>`,
+  `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 13s1.5 3 4 3 4-3 4-3M9 9h.01M15 9h.01"/></svg>`
+];
+
+let currentQuestion = 0;
+let answers = new Array(questions.length).fill(null);
+
+function renderQuestion() {
+  const total = questions.length;
+  const qNum = currentQuestion + 1;
+  document.getElementById('questionCounter').textContent = `Question ${qNum} of ${total}`;
+  const pct = Math.round((qNum/total)*100);
+  document.getElementById('progressPercent').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+  document.getElementById('questionLabel').textContent = `Question ${qNum}`;
+  document.getElementById('questionText').textContent = questions[currentQuestion];
+
+  const revTag = document.getElementById('reverseTag');
+  if (reverseScored.includes(currentQuestion)) {
+    revTag.innerHTML = `<span style="font-size:10px;background:rgba(95,138,74,0.15);color:#5f8a4a;padding:2px 8px;border-radius:999px;">Positive item</span>`;
+  } else {
+    revTag.innerHTML = '';
+  }
+
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  optionLabels.forEach((opt, idx) => {
+    const sel = answers[currentQuestion] === opt.score;
+    const div = document.createElement('div');
+    div.className = 'option' + (sel ? ' selected' : '');
+    div.onclick = () => selectOption(opt.score);
+    div.innerHTML = `
+      <div class="option-radio"></div>
+      <div class="option-icon">${optionIcons[idx]}</div>
+      <span class="flex-1 text-sm text-warm-dark font-medium">${opt.label}</span>
+      <span style="font-size:11px;color:#8c8680;font-family:'JetBrains Mono',monospace;">${opt.tag}</span>
+    `;
+    list.appendChild(div);
+  });
+
+  document.getElementById('prevBtn').disabled = currentQuestion === 0;
+  const nb = document.getElementById('nextBtn');
+  nb.disabled = answers[currentQuestion] === null;
+  const isLast = currentQuestion === total - 1;
+  if (isLast) {
+    nb.innerHTML = `Finish <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+  } else {
+    nb.innerHTML = `Next <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+  }
+
+  const card = document.getElementById('questionCard');
+  card.classList.remove('fade-in');
+  requestAnimationFrame(()=>card.classList.add('fade-in'));
+}
+
+function selectOption(score) {
+  answers[currentQuestion] = score;
+  saveAnswers();
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (answers[currentQuestion] === null) return;
+  if (currentQuestion < questions.length - 1) { currentQuestion++; renderQuestion(); }
+  else showCompletion();
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) { currentQuestion--; renderQuestion(); }
+}
+
+function saveAnswers() {
+  try {
+    localStorage.setItem('pss10_answers', JSON.stringify(answers));
+    localStorage.setItem('pss10_current', String(currentQuestion));
+  } catch(e){}
+}
+
+function calculateScore() {
+  let t = 0;
+  answers.forEach((s,i) => {
+    if (s===null) return;
+    t += reverseScored.includes(i) ? (4-s) : s;
+  });
+  return t;
+}
+
+function effectiveScore(idx) {
+  const r = answers[idx];
+  if (r===null) return 0;
+  return reverseScored.includes(idx) ? (4-r) : r;
+}
+
+function showCompletion() {
+  document.getElementById('quizView').classList.add('hidden');
+  document.getElementById('completionView').classList.remove('hidden');
+}
+
+function showResults() {
+  document.getElementById('completionView').classList.add('hidden');
+  document.getElementById('resultsView').classList.remove('hidden');
+
+  const score = calculateScore();
+  document.getElementById('scoreValue').textContent = score;
+
+  const circ = 2*Math.PI*52;
+  const offset = circ - (score/40)*circ;
+  const ring = document.getElementById('scoreRing');
+  ring.setAttribute('stroke-dasharray', circ.toFixed(1));
+  setTimeout(()=>{ ring.style.strokeDashoffset = offset.toFixed(1); }, 100);
+
+  const badge = document.getElementById('severityBadge');
+  const text  = document.getElementById('severityText');
+  let level;
+
+  if (score <= 13) {
+    level = 'low';
+    badge.className = 'badge badge-low mb-3';
+    badge.innerHTML = `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Low Perceived Stress`;
+    text.textContent = 'Your responses suggest your stress levels are generally manageable. Maintaining your current routines and coping habits can help sustain this balance.';
+    ring.style.stroke = '#5f8a4a';
+    setTimeout(()=>{ document.getElementById('rangeMarker').style.left = Math.min(30, (score/13)*30)+'%'; }, 200);
+  } else if (score <= 26) {
+    level = 'moderate';
+    badge.className = 'badge badge-moderate mb-3';
+    badge.innerHTML = `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4M12 16h.01"/></svg> Moderate Perceived Stress`;
+    text.textContent = 'You may be experiencing ongoing stress that occasionally affects your daily life. Developing healthy coping strategies and self-care practices may help.';
+    ring.style.stroke = '#e8651a';
+    setTimeout(()=>{ document.getElementById('rangeMarker').style.left = (33 + ((score-14)/13)*33)+'%'; }, 200);
+  } else {
+    level = 'high';
+    badge.className = 'badge badge-high mb-3';
+    badge.innerHTML = `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4M12 16h.01"/></svg> High Perceived Stress`;
+    text.textContent = 'Your responses indicate elevated stress levels that may be significantly affecting daily life. Consider speaking with a mental health professional.';
+    ring.style.stroke = '#c83c28';
+    setTimeout(()=>{ document.getElementById('rangeMarker').style.left = Math.min(97, 66+((score-27)/13)*30)+'%'; }, 200);
+  }
+
+  buildBarChart();
+  buildDomainCards();
+  buildInsights(score, level);
+  buildResponseReview();
+  setTimeout(()=>{ buildDistChart(score); buildRadarChart(); }, 100);
+}
+
+function buildBarChart() {
+  const shortQs = ["Unexpected upset","Loss of control","Nervousness","Confidence (pos)","Things going well (pos)","Inability to cope","Control of irritations (pos)","On top of things (pos)","Anger at uncontrollables","Difficulties piling up"];
+  const container = document.getElementById('barList');
+  container.innerHTML = '';
+  answers.forEach((raw, idx) => {
+    const eff = effectiveScore(idx);
+    const pct = (eff/4)*100;
+    const cols = ['#ede9df','#c8b878','#e8a84d','#e8651a','#c83c28'];
+    const barColor = cols[eff];
+    const isRev = reverseScored.includes(idx);
+    const row = document.createElement('div');
+    row.innerHTML = `
+      <div class="flex items-center justify-between mb-1">
+        <span style="font-size:11px;color:#8c8680;" class="flex items-center gap-1">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;">Q${idx+1}</span> — ${shortQs[idx]}
+          ${isRev ? '<span style="font-size:9px;background:rgba(95,138,74,.15);color:#5f8a4a;padding:1px 6px;border-radius:999px;">positive</span>' : ''}
+        </span>
+        <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:#2a2520;">${eff}/4</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${barColor};"></div></div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function buildDomainCards() {
+  const negIdxs = [0,1,2,5,8,9];
+  const posIdxs = [3,4,6,7];
+  const negScore = negIdxs.reduce((s,i)=>s+effectiveScore(i),0);
+  const posScore = posIdxs.reduce((s,i)=>s+effectiveScore(i),0);
+  const negMax = negIdxs.length*4;
+  const posMax = posIdxs.length*4;
+  document.getElementById('domainCards').innerHTML = `
+    <div class="card p-4" style="background:rgba(200,60,40,.04);">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded flex items-center justify-center" style="background:rgba(200,60,40,.12);color:#c83c28;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+        </div>
+        <p class="text-xs font-medium text-warm-dark">Perceived Negativity</p>
+      </div>
+      <p class="font-serif text-2xl text-warm-dark mb-1">${negScore}<span class="text-sm text-warm-gray font-sans"> / ${negMax}</span></p>
+      <div class="bar-bg mt-2"><div class="bar-fill" style="width:${(negScore/negMax)*100}%;background:#c83c28;"></div></div>
+      <p class="text-xs text-warm-gray mt-2">Upset, nervousness, uncontrollable stressors</p>
+    </div>
+    <div class="card p-4" style="background:rgba(95,138,74,.04);">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-7 h-7 rounded flex items-center justify-center" style="background:rgba(95,138,74,.15);color:#5f8a4a;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="text-xs font-medium text-warm-dark">Loss of Control</p>
+      </div>
+      <p class="font-serif text-2xl text-warm-dark mb-1">${posScore}<span class="text-sm text-warm-gray font-sans"> / ${posMax}</span></p>
+      <div class="bar-bg mt-2"><div class="bar-fill" style="width:${(posScore/posMax)*100}%;background:#5f8a4a;"></div></div>
+      <p class="text-xs text-warm-gray mt-2">Confidence, coping ability, feeling in control</p>
+    </div>
+  `;
+}
+
+function buildInsights(score, level) {
+  const negIdxs = [0,1,2,5,8,9];
+  const posIdxs = [3,4,6,7];
+  const highNeg = negIdxs.filter(i=>answers[i]>=3);
+  const lowCtrl = posIdxs.filter(i=>effectiveScore(i)>=2);
+  const ins = [];
+
+  if (highNeg.length >= 3) ins.push({icon:`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4M12 16h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`, bg:'rgba(200,60,40,.1)', col:'#c83c28', text:'Multiple negative stress indicators are elevated. Recurring feelings of upset, nervousness, or being overwhelmed appear frequently in your responses.'});
+  if (lowCtrl.length >= 2) ins.push({icon:`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h8m-8 6h16"/></svg>`, bg:'rgba(232,101,26,.1)', col:'#e8651a', text:'Your sense of personal control appears reduced. Building structured daily routines may help restore your sense of agency.'});
+  if (answers[2]>=3) ins.push({icon:`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`, bg:'rgba(232,101,26,.1)', col:'#e8651a', text:'Frequent feelings of nervousness and stress were reported. Daily mindfulness or breathing exercises — even 5 minutes — can lower your baseline stress response.'});
+  if (answers[9]>=3) ins.push({icon:`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>`, bg:'rgba(200,60,40,.1)', col:'#c83c28', text:'A sense of difficulties "piling up" suggests possible task-overload. Breaking responsibilities into smaller steps can significantly reduce overwhelm.'});
+  if (level === 'low') ins.push({icon:`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`, bg:'rgba(95,138,74,.12)', col:'#5f8a4a', text:'Your overall stress level is low. Your current coping strategies appear effective — continue prioritising sleep, exercise, and social connection.'});
+  if (ins.length === 0) ins.push({icon:`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>`, bg:'rgba(140,134,128,.1)', col:'#8c8680', text:'Consider tracking your mood and stress patterns weekly to identify any trends over time.'});
+
+  document.getElementById('insightsList').innerHTML = ins.map(i=>`
+    <div class="insight-item">
+      <div class="insight-icon" style="background:${i.bg};color:${i.col};">${i.icon}</div>
+      <p class="text-warm-dark">${i.text}</p>
+    </div>
+  `).join('');
+}
+
+function buildResponseReview() {
+  const shortQs = ["Unexpected upset","Loss of control","Nervousness / stress","Confidence in problems","Things going your way","Inability to cope","Control of irritations","Feeling on top","Anger at uncontrollables","Difficulties piling up"];
+  document.getElementById('responseReview').innerHTML = answers.map((raw,idx)=>{
+    const opt = optionLabels[raw];
+    const eff = effectiveScore(idx);
+    const isRev = reverseScored.includes(idx);
+    return `
+      <div class="flex items-center gap-3 py-2 border-b last:border-0" style="border-color:#ede9df;">
+        <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:#8c8680;width:22px;flex-shrink:0;">Q${idx+1}</span>
+        <span class="flex-1" style="font-size:12px;color:#8c8680;">${shortQs[idx]}</span>
+        <span style="font-size:12px;font-weight:500;color:#2a2520;">${opt.label}</span>
+        <span style="font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 7px;border-radius:999px;background:rgba(232,101,26,.08);color:#e8651a;">${eff} pt${eff!==1?'s':''}</span>
+        ${isRev?'<span style="font-size:9px;background:rgba(95,138,74,.12);color:#5f8a4a;padding:2px 6px;border-radius:999px;">+ve</span>':''}
+      </div>
+    `;
+  }).join('');
+}
+
+function buildDistChart(userScore) {
+  const canvas = document.getElementById('distCanvas');
+  const ctx = canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const pad={top:18,right:18,bottom:32,left:32};
+  const bins=[];
+  for(let s=0;s<=40;s++){
+    const z=(s-14)/6.5;
+    bins.push({score:s, freq:Math.exp(-.5*z*z)*100});
+  }
+  const maxF=Math.max(...bins.map(b=>b.freq));
+  const cW=W-pad.left-pad.right, cH=H-pad.top-pad.bottom;
+  const bW=cW/bins.length;
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#ede9df'; ctx.lineWidth=1;
+  [.25,.5,.75,1].forEach(f=>{
+    const y=pad.top+cH*(1-f);
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cW,y);ctx.stroke();
+  });
+  bins.forEach((b,i)=>{
+    const bh=(b.freq/maxF)*cH;
+    const x=pad.left+i*bW;
+    const y=pad.top+cH-bh;
+    ctx.fillStyle=(b.score===userScore)?'#e8651a':'#d8d3c8';
+    ctx.fillRect(x+1,y,bW-2,bh);
+  });
+  ctx.fillStyle='#8c8680'; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='center';
+  [0,10,14,20,27,30,40].forEach(s=>{
+    const x=pad.left+(s/40)*cW;
+    ctx.fillText(s,x,H-6);
+    if(s===14||s===27){
+      ctx.strokeStyle='rgba(140,134,128,.4)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(x,pad.top);ctx.lineTo(x,pad.top+cH);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  });
+  const ux=pad.left+(userScore/40)*cW;
+  ctx.strokeStyle='#e8651a'; ctx.lineWidth=2; ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(ux,pad.top);ctx.lineTo(ux,pad.top+cH);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#e8651a'; ctx.font='bold 10px DM Sans,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('You: '+userScore, ux, pad.top+10);
+}
+
+function buildRadarChart() {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const cx=W/2, cy=H/2, R=Math.min(W,H)/2-44;
+  const axes=[
+    {label:'Unexpected upset',idx:0},
+    {label:'Loss of control',idx:1},
+    {label:'Nervousness',idx:2},
+    {label:'Confidence',idx:3},
+    {label:'Going well',idx:4},
+    {label:"Can't cope",idx:5},
+    {label:'Controlling irrit.',idx:6},
+    {label:'On top',idx:7},
+    {label:'Anger',idx:8},
+    {label:'Overwhelmed',idx:9},
+  ];
+  const n=axes.length;
+  const aStep=(2*Math.PI)/n;
+  const getVal=(ax)=>effectiveScore(ax.idx);
+
+  ctx.clearRect(0,0,W,H);
+  for(let ring=1;ring<=4;ring++){
+    const r=(ring/4)*R;
+    ctx.beginPath();
+    for(let a=0;a<n;a++){
+      const angle=a*aStep-Math.PI/2;
+      const x=cx+r*Math.cos(angle), y=cy+r*Math.sin(angle);
+      a===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle=ring===4?'#c8b878':'#d8d3c8'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle='rgba(140,134,128,.06)'; ctx.fill();
+  }
+  axes.forEach((_,a)=>{
+    const angle=a*aStep-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+R*Math.cos(angle),cy+R*Math.sin(angle));
+    ctx.strokeStyle='#d8d3c8'; ctx.lineWidth=1; ctx.stroke();
+  });
+  ctx.beginPath();
+  axes.forEach((ax,a)=>{
+    const val=getVal(ax), r=(val/4)*R;
+    const angle=a*aStep-Math.PI/2;
+    const x=cx+r*Math.cos(angle), y=cy+r*Math.sin(angle);
+    a===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle='rgba(232,101,26,.14)'; ctx.fill();
+  ctx.strokeStyle='#e8651a'; ctx.lineWidth=2; ctx.stroke();
+  axes.forEach((ax,a)=>{
+    const val=getVal(ax), r=(val/4)*R;
+    const angle=a*aStep-Math.PI/2;
+    const x=cx+r*Math.cos(angle), y=cy+r*Math.sin(angle);
+    ctx.beginPath();ctx.arc(x,y,4,0,2*Math.PI);
+    ctx.fillStyle='#e8651a'; ctx.fill();
+    ctx.fillStyle='white'; ctx.beginPath();ctx.arc(x,y,2,0,2*Math.PI);ctx.fill();
+  });
+  ctx.fillStyle='#2a2520'; ctx.font='11px DM Sans,sans-serif';
+  axes.forEach((ax,a)=>{
+    const angle=a*aStep-Math.PI/2;
+    const lx=cx+(R+28)*Math.cos(angle);
+    const ly=cy+(R+28)*Math.sin(angle);
+    ctx.textAlign=(lx<cx-5)?'right':(lx>cx+5)?'left':'center';
+    ctx.fillText(ax.label, lx, ly+4);
+  });
+}
+
+function switchTab(tab) {
+  ['bar','radar','dist'].forEach(t=>{
+    const key = t.charAt(0).toUpperCase()+t.slice(1);
+    document.getElementById('chart'+key).classList.toggle('hidden', t!==tab);
+    document.getElementById('tab'+key).classList.toggle('active', t===tab);
+  });
+  if (tab==='radar') { setTimeout(buildRadarChart, 50); }
+  if (tab==='dist')  { setTimeout(()=>buildDistChart(calculateScore()), 50); }
+}
+
+function restartAssessment() {
+  try{ localStorage.removeItem('pss10_answers'); localStorage.removeItem('pss10_current'); }catch(e){}
+  location.reload();
+}
+
+function loadAnswers() {
+  try{
+    const s=localStorage.getItem('pss10_answers');
+    const q=localStorage.getItem('pss10_current');
+    if(s) answers=JSON.parse(s);
+    if(q) currentQuestion=parseInt(q,10);
+  }catch(e){}
+}
+
+loadAnswers();
+renderQuestion();
+</script>
+</body>
+</html>

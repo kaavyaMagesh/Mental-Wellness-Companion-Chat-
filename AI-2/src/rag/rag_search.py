@@ -19,7 +19,8 @@ def generate_embedding(text):
         "https://dpv007-embedding-model.hf.space/gradio_api/call/embed_dense",
         json={
             "data": [text]
-        }
+        },
+        timeout=5.0
     )
 
     response.raise_for_status()
@@ -27,7 +28,8 @@ def generate_embedding(text):
     event_id = response.json()["event_id"]
 
     result = requests.get(
-        f"https://dpv007-embedding-model.hf.space/gradio_api/call/embed_dense/{event_id}"
+        f"https://dpv007-embedding-model.hf.space/gradio_api/call/embed_dense/{event_id}",
+        timeout=5.0
     )
 
     result.raise_for_status()

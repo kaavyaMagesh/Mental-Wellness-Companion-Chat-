@@ -40,7 +40,7 @@ export function renderChatLayout() {
         </div>
 
         <!-- Links to Support -->
-        <div style="padding:10px 20px; flex-shrink:0; border-bottom:1px solid #d8d3c8;">
+        <div style="padding:10px 20px; flex-shrink:0; border-bottom:1px solid #d8d3c8; display: flex; flex-direction: column; gap: 8px;">
           <a href="support.html" class="btn-secondary" style="display:block; text-align:center; text-decoration:none; font-size:11px; padding:6px 12px;">
             Support Center
           </a>
@@ -110,9 +110,15 @@ export function renderChatLayout() {
             <p style="font-size:10px;color:#8c8680;">AI-powered support · Always here</p>
           </div>
           <div style="display:flex;align-items:center;gap:2px;flex-shrink:0;position:relative;">
+            <button class="icon-btn" id="topbarTourBtn" title="Take the tour" style="font-size:14px;font-weight:600;color:#8c8680;">
+              ?
+            </button>
             <button class="icon-btn" id="topbarBookmarkBtn" title="Bookmarks">
               🔖
             </button>
+            <a href="index.html" class="icon-btn" id="topbarCloseBtn" title="Exit Chat" style="font-size:16px;text-decoration:none;display:flex;align-items:center;justify-content:center;color:#8c8680;padding:3px;">
+              ✕
+            </a>
           </div>
         </div>
 
@@ -225,6 +231,46 @@ async function initializeChat() {
   }
 }
 
+// ─── FIX: Inline rename helper ───
+function activateInlineRename(titleEl, session) {
+  if (titleEl.querySelector('input')) return; // already editing
+  const currentTitle = session.title || 'New Conversation';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = currentTitle;
+  input.style.cssText = 'font-size:12px;font-weight:500;color:#2a2520;background:white;border:1px solid #e8651a;border-radius:3px;padding:2px 6px;width:100%;outline:none;font-family:"DM Sans",sans-serif;box-shadow:0 0 0 2px rgba(232,101,26,.15);';
+  titleEl.innerHTML = '';
+  titleEl.appendChild(input);
+  input.focus();
+  input.select();
+  async function commitRename() {
+    const newTitle = input.value.trim();
+    if (!newTitle || newTitle === currentTitle) { titleEl.textContent = currentTitle; return; }
+    try {
+      const res = await fetch(`${API_BASE_URL}/sessions/${session.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: newTitle })
+      });
+      if (!res.ok) throw new Error('Failed');
+      const updated = await res.json();
+      const idx = sessions.findIndex(s => s.id === session.id);
+      if (idx !== -1) sessions[idx].title = updated.title;
+      renderSessionList();
+    } catch (err) {
+      console.error(err);
+      titleEl.textContent = currentTitle;
+      showToast('Could not rename. Please try again.');
+    }
+  }
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); commitRename(); }
+    if (e.key === 'Escape') { titleEl.textContent = currentTitle; }
+  });
+  input.addEventListener('blur', commitRename);
+  input.addEventListener('click', (e) => e.stopPropagation());
+}
+
 function renderSessionList() {
   const sessionList = document.getElementById("sessionList");
   sessionList.innerHTML = "";
@@ -251,7 +297,7 @@ function renderSessionList() {
     item.innerHTML = `
       <div class="session-click-area" style="padding:10px 32px 10px 10px;border-radius:6px;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;">
         <div style="flex:1;min-width:0;margin-right:8px;">
-          <h4 style="font-size:12px;font-weight:500;color:#2a2520;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 0 2px 0;">${title}</h4>
+          <h4 class="session-title" style="font-size:12px;font-weight:500;color:#2a2520;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 0 2px 0;">${title}</h4>
           <p style="font-size:10px;color:#8c8680;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;">${preview}</p>
         </div>
         <span style="font-size:9px;color:#b8b4ae;flex-shrink:0;margin-top:2px;">${dateStr}</span>
@@ -260,8 +306,8 @@ function renderSessionList() {
       <div class="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
         <button class="menu-dots-btn text-warm-gray hover:text-warm-dark p-1 rounded hover:bg-cream-dark" style="font-size: 14px; line-height: 1;">⋮</button>
         <div class="delete-dropdown hidden absolute right-0 mt-1 bg-white border border-cream-border rounded shadow-lg py-1 z-20 min-w-[90px]">
-          <button class="rename-session-btn text-xs text-warm-dark hover:bg-cream-dark w-full text-left px-3 py-1.5 font-medium">Rename</button>
-          <button class="delete-session-btn text-xs text-red-600 hover:bg-red-50 w-full text-left px-3 py-1.5 font-medium border-t border-cream-border">Delete</button>
+          <button class="rename-session-btn text-xs text-warm-dark hover:bg-cream-dark w-full text-left px-3 py-1.5 font-medium">✏️ Rename</button>
+          <button class="delete-session-btn text-xs text-red-600 hover:bg-red-50 w-full text-left px-3 py-1.5 font-medium border-t border-cream-border">🗑 Delete</button>
         </div>
       </div>
     `;
@@ -274,47 +320,18 @@ function renderSessionList() {
     const dropdown = item.querySelector('.delete-dropdown');
     dotsBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      // Close other open delete dropdowns
       document.querySelectorAll('.delete-dropdown').forEach(d => {
         if (d !== dropdown) d.classList.add('hidden');
       });
       dropdown.classList.toggle('hidden');
     });
 
-    // Rename session button logic
+    // FIX: Inline rename — no prompt() dialog
     const renameBtn = item.querySelector('.rename-session-btn');
-    renameBtn.addEventListener("click", async (e) => {
+    renameBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       dropdown.classList.add('hidden');
-      const newTitle = prompt("Rename Conversation:", title);
-      if (newTitle !== null) {
-        const trimmedTitle = newTitle.trim();
-        if (!trimmedTitle) {
-          alert("Title cannot be empty.");
-          return;
-        }
-        try {
-          const res = await fetch(`${API_BASE_URL}/sessions/${session.id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ title: trimmedTitle })
-          });
-          if (!res.ok) throw new Error("Failed to rename session on server");
-          
-          const updatedSession = await res.json();
-          // Update in local memory state
-          const index = sessions.findIndex(s => s.id === session.id);
-          if (index !== -1) {
-            sessions[index].title = updatedSession.title;
-          }
-          renderSessionList();
-        } catch (err) {
-          console.error(err);
-          alert("Could not rename conversation. Please try again.");
-        }
-      }
+      activateInlineRename(item.querySelector('.session-title'), session);
     });
 
     // Delete session button logic
@@ -325,22 +342,15 @@ function renderSessionList() {
       try {
         const res = await fetch(`${API_BASE_URL}/sessions/${session.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete session from server");
-        
-        // Remove from local memory state
         sessions = sessions.filter(s => s.id !== session.id);
         renderSessionList();
-        
         if (currentSessionId === session.id) {
-          if (sessions.length > 0) {
-            selectSession(sessions[0].id);
-          } else {
-            currentSessionId = null;
-            renderMessages([]);
-          }
+          if (sessions.length > 0) { selectSession(sessions[0].id); }
+          else { currentSessionId = null; renderMessages([]); }
         }
       } catch (err) {
         console.error(err);
-        alert("Could not delete conversation. Please try again.");
+        showToast("Could not delete conversation.");
       }
     });
 
@@ -467,6 +477,16 @@ function setupEventListeners() {
     });
   }
 
+  // Help / Tour button — clears the flag so the tour can re-run
+  const tourBtn = document.getElementById("topbarTourBtn");
+  if (tourBtn) {
+    tourBtn.addEventListener("click", () => {
+      localStorage.removeItem("hasCompletedOnboarding");
+      closeOnboardingTour();
+      setTimeout(() => showOnboardingStep(0), 100);
+    });
+  }
+
   const closeBookmarkBtn = document.getElementById("closeBookmarkBtn");
   if (closeBookmarkBtn) {
     closeBookmarkBtn.addEventListener("click", () => {
@@ -555,32 +575,74 @@ function createTypingIndicator() {
   return indicator;
 }
 
+// ─── Toast helper ───
+function showToast(message, duration = 3000) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2a2520;color:white;font-size:.75rem;padding:9px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap;font-family:"DM Sans",sans-serif;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, duration);
+}
+
+// ─── FIX: Crisis alert banner ───
+function showCrisisAlert(chatContainer) {
+  const existing = document.getElementById('crisisAlertBanner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'crisisAlertBanner';
+  banner.style.cssText = 'background:linear-gradient(135deg,#fff1f0,#fff8f7);border:1.5px solid #e53935;border-radius:12px;padding:16px 18px;margin:0 0 12px 0;animation:fadeUp .3s ease;position:relative;flex-shrink:0;';
+  banner.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#e53935;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.2" viewBox="0 0 20 20"><path d="M10 3L2 17h16L10 3z" stroke-linejoin="round"/><path d="M10 9v4M10 14.5h.01" stroke-linecap="round"/></svg>
+      </div>
+      <div style="flex:1;">
+        <p style="font-size:13px;font-weight:600;color:#c62828;margin:0 0 4px 0;">You are not alone — help is here</p>
+        <p style="font-size:12px;color:#b71c1c;line-height:1.5;margin:0 0 10px 0;">It sounds like you may be going through something very serious. Your life matters, and support is available right now.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <a href="tel:9152987821" style="background:#e53935;color:white;font-size:11px;font-weight:600;padding:7px 14px;border-radius:6px;text-decoration:none;display:flex;align-items:center;gap:6px;">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 3h2l1 4-1.5 1.5a10 10 0 0 0 5 5L11 12l4 1v2a1 1 0 0 1-1 1A15 15 0 0 1 2 4a1 1 0 0 1 1-1z"/></svg>
+            iCall: 9152987821
+          </a>
+          <a href="tel:18602662345" style="background:white;color:#e53935;border:1.5px solid #e53935;font-size:11px;font-weight:600;padding:7px 14px;border-radius:6px;text-decoration:none;display:flex;align-items:center;gap:6px;">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16"><path d="M3 3h2l1 4-1.5 1.5a10 10 0 0 0 5 5L11 12l4 1v2a1 1 0 0 1-1 1A15 15 0 0 1 2 4a1 1 0 0 1 1-1z"/></svg>
+            Vandrevala: 1860-2662-345
+          </a>
+        </div>
+      </div>
+      <button onclick="document.getElementById('crisisAlertBanner').remove()" style="background:none;border:none;cursor:pointer;color:#e53935;font-size:18px;line-height:1;padding:0;flex-shrink:0;" title="Dismiss">✕</button>
+    </div>
+  `;
+  // Insert at top of chat
+  chatContainer.insertBefore(banner, chatContainer.firstChild);
+  chatContainer.scrollTop = 0;
+}
+
 async function sendMessage() {
   const input = document.getElementById("messageInput");
   const chatContainer = document.getElementById("chatContainer");
   const content = input.value.trim();
 
-  if (!content) {
-    input.focus();
-    return;
-  }
-
+  if (!content) { input.focus(); return; }
   if (content.length > 1000) {
-    alert("Message is too long. Please keep it under 1000 characters.");
+    showToast("Message is too long. Max 1000 characters.");
     return;
   }
 
-  if (!currentSessionId) {
-    await createNewSession();
-  }
+  if (!currentSessionId) await createNewSession();
 
-  // Pre-render user message
+  // Clear empty state if present
+  const emptyState = chatContainer.querySelector(".empty-state-greeting");
+  if (emptyState) emptyState.remove();
+
   chatContainer.appendChild(
-    createMessageBubble(
-      content,
-      "user",
-      new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    )
+    createMessageBubble(content, "user",
+      new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
   );
 
   input.value = "";
@@ -600,17 +662,12 @@ async function sendMessage() {
 
     const response = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages/stream`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: content
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: content }),
       signal: currentAbortController.signal
     });
 
     typingIndicator.remove();
-
     if (!response.ok) throw new Error("Failed to send message");
 
     const reader = response.body.getReader();
@@ -623,37 +680,46 @@ async function sendMessage() {
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split("\n");
-      buffer = lines.pop(); // keep last incomplete line
+      buffer = lines.pop();
 
       for (const line of lines) {
         const cleanLine = line.trim();
         if (!cleanLine.startsWith("data:")) continue;
-
         const dataStr = cleanLine.substring(5).trim();
         if (!dataStr) continue;
 
         try {
           const data = JSON.parse(dataStr);
+
+          // Show crisis banner when the backend emits a dedicated crisis event
+          if (data.type === "crisis") {
+            showCrisisAlert(chatContainer);
+          }
+
+          // Legacy fallback: also check user_message row for risk_flag
+          if (data.type === "user_message" && data.message && data.message.risk_flag === true) {
+            showCrisisAlert(chatContainer);
+          }
+
           if (data.type === "token") {
             if (!aiBubbleWrapper) {
               aiBubbleWrapper = createMessageBubble("", "assistant", "Now");
               aiBubbleText = aiBubbleWrapper.querySelector(".bubble-ai p");
-              
               cursorElement = document.createElement("span");
               cursorElement.className = "streaming-cursor";
-              aiBubbleWrapper.querySelector(".bubble-ai").insertBefore(cursorElement, aiBubbleWrapper.querySelector(".msg-actions"));
-
+              aiBubbleWrapper.querySelector(".bubble-ai").insertBefore(
+                cursorElement, aiBubbleWrapper.querySelector(".msg-actions")
+              );
               chatContainer.appendChild(aiBubbleWrapper);
             }
-
             aiBubbleText.textContent += data.content;
             scrollToBottom(true);
+
           } else if (data.type === "done") {
             if (data.message && aiBubbleWrapper) {
               const formattedTime = new Date(data.message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
               const timeSpan = aiBubbleWrapper.querySelector(".msg-time");
               if (timeSpan) timeSpan.textContent = formattedTime;
-
               const currentSession = sessions.find((s) => s.id === currentSessionId);
               if (currentSession) {
                 currentSession.preview = data.message.message;
@@ -676,20 +742,18 @@ async function sendMessage() {
       chatContainer.appendChild(
         createMessageBubble(
           "Unable to send message. Please check your connection and try again.",
-          "assistant",
-          "Now"
+          "assistant", "Now"
         )
       );
     }
   } finally {
-    if (cursorElement) {
-      cursorElement.remove();
-    }
-    typingIndicator.remove(); // safeguard
+    if (cursorElement) cursorElement.remove();
+    typingIndicator.remove();
     currentAbortController = null;
     setButtonStreamingState(false);
     scrollToBottom(true);
-    initializeChat();
+    const sess = sessions.find(s => s.id === currentSessionId);
+    if (sess) renderSessionList();
   }
 }
 
@@ -697,12 +761,10 @@ async function createNewSession() {
   try {
     const response = await fetch(`${API_BASE_URL}/sessions`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: "New Conversation",
-        system_context: "You are a helpful and supportive AI Wellness Companion."
+        system_context: "You are a compassionate AI Wellness Companion named InnerWhispers. Help users with mental wellness, stress, healthy habits and emotional support."
       })
     });
 
@@ -711,12 +773,79 @@ async function createNewSession() {
 
     sessions.unshift(newSession);
     currentSessionId = newSession.id;
-
     renderSessionList();
     renderMessages([]);
+
   } catch (error) {
     console.error("Error creating session:", error);
-    alert("Could not start a new conversation. Please try again.");
+    showToast("Could not start a new conversation. Please try again.");
+  }
+}
+
+async function sendIntroMessage(sessionId) {
+  const chatContainer = document.getElementById("chatContainer");
+  chatContainer.innerHTML = ""; // clear empty state
+
+  const typingIndicator = createTypingIndicator();
+  chatContainer.appendChild(typingIndicator);
+  scrollToBottom(true);
+
+  let aiBubbleWrapper = null;
+  let aiBubbleText = null;
+  let cursorElement = null;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/sessions/${sessionId}/messages/stream`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "[SYSTEM_INTRO] Please greet the user warmly in 2-3 sentences. Introduce yourself as their InnerWhispers Wellness Companion and ask how they are feeling today. Be warm and concise."
+      })
+    });
+
+    typingIndicator.remove();
+    if (!response.ok) return;
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop();
+      for (const line of lines) {
+        const cleanLine = line.trim();
+        if (!cleanLine.startsWith("data:")) continue;
+        const dataStr = cleanLine.substring(5).trim();
+        if (!dataStr) continue;
+        try {
+          const data = JSON.parse(dataStr);
+          if (data.type === "token") {
+            if (!aiBubbleWrapper) {
+              aiBubbleWrapper = createMessageBubble("", "assistant", "Now");
+              aiBubbleText = aiBubbleWrapper.querySelector(".bubble-ai p");
+              cursorElement = document.createElement("span");
+              cursorElement.className = "streaming-cursor";
+              aiBubbleWrapper.querySelector(".bubble-ai").insertBefore(
+                cursorElement, aiBubbleWrapper.querySelector(".msg-actions")
+              );
+              chatContainer.appendChild(aiBubbleWrapper);
+            }
+            aiBubbleText.textContent += data.content;
+            scrollToBottom(true);
+          }
+        } catch (e) { /* skip malformed chunks */ }
+      }
+    }
+  } catch (e) {
+    console.error("Intro message failed:", e);
+  } finally {
+    if (cursorElement) cursorElement.remove();
+    typingIndicator.remove();
+    scrollToBottom(true);
   }
 }
 
@@ -776,6 +905,8 @@ async function loadOlderMessages() {
 let currentTooltipElement = null;
 
 function startOnboardingTour() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("onboarding") !== "true") return;
   if (localStorage.getItem("hasCompletedOnboarding")) return;
   showOnboardingStep(0);
 }

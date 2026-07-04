@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 # Constants
 MAX_SESSION_MESSAGES = 20
-MAX_DAILY_MESSAGES = 100
+MAX_DAILY_MESSAGES = 10000
 
 def check_rate_limits(request: Request, db: Client = Depends(get_supabase_client)):
     """

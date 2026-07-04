@@ -31,7 +31,7 @@ class MemoryManager:
 
     def _load_state(self):
         if os.path.exists(self.state_file):
-            with open(self.state_file, 'r') as f:
+            with open(self.state_file, 'r', encoding='utf-8') as f:
                 state = json.load(f)
                 self.short_term_buffer = state.get("short_term_buffer", [])
                 self.rolling_summary = state.get("rolling_summary", "")
@@ -40,11 +40,11 @@ class MemoryManager:
             self.rolling_summary = ""
 
     def _save_state(self):
-        with open(self.state_file, 'w') as f:
+        with open(self.state_file, 'w', encoding='utf-8') as f:
             json.dump({
                 "short_term_buffer": self.short_term_buffer,
                 "rolling_summary": self.rolling_summary
-            }, f)
+            }, f, ensure_ascii=False)
 
     def add_message(self, role: str, content: str):
         """Adds a message to all memory layers."""
